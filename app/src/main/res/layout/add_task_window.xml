@@ -60,6 +60,12 @@
             android:orientation="vertical"
             android:padding="2dp">
 
+            <Button
+                android:id="@+id/buttonSelectDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_date" />
+
             <TextView
                 android:id="@+id/date_text"
                 android:layout_width="match_parent"
@@ -68,14 +74,9 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text=""
+                android:textColor="#979797"
                 android:textSize="@dimen/min_size" />
 
-
-            <Button
-                android:id="@+id/buttonSelectDateTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/choose_date" />
 
         </LinearLayout>
 
@@ -85,18 +86,18 @@
             android:orientation="vertical"
             android:padding="2dp">
 
+            <Button
+                android:id="@+id/buttonSelectImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/choose_image" />
+
             <ImageView
                 android:id="@+id/taskImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="2dp" />
-
-            <Button
-                android:id="@+id/buttonSelectImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/choose_image" />
 
         </LinearLayout>
 

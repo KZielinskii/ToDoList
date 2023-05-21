@@ -1,11 +1,16 @@
 package com.example.todolist.Window;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.TypedValue;
@@ -23,17 +28,23 @@ import androidx.fragment.app.DialogFragment;
 import com.example.todolist.Class.Task;
 import com.example.todolist.R;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class AddTaskWindow extends DialogFragment {
+    private static final int PICK_IMAGE_REQUEST = 1;
     private ArrayList<Task> taskArrayList;
     private Context context;
     private String newDateTime;
     private TextView dateTimeView;
+    private Uri selectedImageUri;
+    private ImageView taskImage;
 
     public AddTaskWindow(ArrayList<Task> taskArrayList, Context context) {
         this.taskArrayList = taskArrayList;
@@ -51,7 +62,7 @@ public class AddTaskWindow extends DialogFragment {
         Button buttonSelectDateTime = ll.findViewById(R.id.buttonSelectDateTime);
         dateTimeView = ll.findViewById(R.id.date_text);
         Button buttonSelectImage = ll.findViewById(R.id.buttonSelectImage);
-        ImageView imageView = ll.findViewById(R.id.taskImage);
+        taskImage = ll.findViewById(R.id.taskImage);
 
 
         builder.setView(ll)
@@ -85,8 +96,38 @@ public class AddTaskWindow extends DialogFragment {
             }
         });
 
+        buttonSelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+            }
+        });
+
         return dialog;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedImageUri = data.getData();
+
+            try {
+                InputStream imageStream = context.getContentResolver().openInputStream(selectedImageUri);
+                Bitmap originalBitmap = BitmapFactory.decodeStream(imageStream);
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 128, 128, false);
+
+                taskImage.setImageBitmap(scaledBitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 
     private void showDateTimePickerDialog() {
         Calendar calendar = Calendar.getInstance();
