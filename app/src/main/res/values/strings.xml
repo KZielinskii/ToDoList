@@ -12,4 +12,5 @@
     <string name="done">Ukończono.</string>
     <string name="category">Kategoria:</string>
     <string name="delete">Usuń:</string>
+    <string name="creating_date">Data utworzenia:</string>
 </resources>
