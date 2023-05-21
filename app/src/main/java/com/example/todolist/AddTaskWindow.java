@@ -1,8 +1,8 @@
-package com.example.todolist.Window;
+package com.example.todolist;
 
 import static android.app.Activity.RESULT_OK;
 
-import static com.example.todolist.Activity.MainActivity.taskListAdapter;
+import static com.example.todolist.MainActivity.taskListAdapter;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -23,8 +22,6 @@ import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
-import com.example.todolist.Class.Task;
-import com.example.todolist.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,7 +67,7 @@ public class AddTaskWindow extends DialogFragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
-                        taskArrayList.add(new Task(newTitle, newDescription, newDateTime, createdDateTime, selectedFileUri, context));
+                        taskArrayList.add(new Task(newTitle, newDescription, newDateTime, createdDateTime, selectedFileUri, context, true));
                         taskListAdapter.notifyDataSetChanged();
                     }
                 })

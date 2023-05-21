@@ -1,4 +1,4 @@
-package com.example.todolist.Adapter;
+package com.example.todolist;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.todolist.Activity.ItemActivity;
+import com.example.todolist.ItemActivity;
 import com.example.todolist.R;
 
-import com.example.todolist.Class.Task;
+import com.example.todolist.Task;
 
 import java.util.ArrayList;
 
@@ -49,9 +49,12 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         titleView.setText(task.getTitle());
         descriptionView.setText(task.getDescription());
         dateView.setText(task.getNewDateTime());
+
         if(task.getSelectedFileUri() != null)
         {
            imageView.setImageResource(R.drawable.ic_positive);
+        } else {
+            imageView.setImageResource(R.drawable.ic_negative);
         }
 
         LinearLayout listItem = itemView.findViewById(R.id.list_item);

@@ -9,4 +9,7 @@
     <string name="add_description">Opis:</string>
     <string name="date">Data:</string>
     <string name="attachment">Załącznik:</string>
+    <string name="done">Ukończono.</string>
+    <string name="category">Kategoria:</string>
+    <string name="delete">Usuń:</string>
 </resources>
