@@ -1,13 +1,14 @@
 package com.example.todolist.Class;
 
 import android.content.Context;
+import android.net.Uri;
 
 public class Task {
     private String title;
     private String date;
     private Context context;
 
-    public Task(String title, String date, Context context)
+    public Task(String title, String date, String newDateTime, String createdDateTime, Uri selectedImageUri, Context context)
     {
         this.title = title;
         this.date = date;

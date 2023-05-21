@@ -39,7 +39,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/taskImage"
+        android:id="@+id/taskAttachment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.5"

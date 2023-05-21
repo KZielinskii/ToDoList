@@ -8,17 +8,13 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,23 +24,20 @@ import androidx.fragment.app.DialogFragment;
 import com.example.todolist.Class.Task;
 import com.example.todolist.R;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class AddTaskWindow extends DialogFragment {
-    private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int PICK_FILE_REQUEST = 1;
     private ArrayList<Task> taskArrayList;
     private Context context;
     private String newDateTime;
     private TextView dateTimeView;
-    private Uri selectedImageUri;
-    private ImageView taskImage;
+    private Uri selectedFileUri;
+    private TextView attachmentView;
 
     public AddTaskWindow(ArrayList<Task> taskArrayList, Context context) {
         this.taskArrayList = taskArrayList;
@@ -56,28 +49,30 @@ public class AddTaskWindow extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.add_task_window, null);
-        newDateTime = null;
+        newDateTime = "";
 
         EditText editText = ll.findViewById(R.id.editText);
+        EditText editText2 = ll.findViewById(R.id.editText2);
         Button buttonSelectDateTime = ll.findViewById(R.id.buttonSelectDateTime);
         dateTimeView = ll.findViewById(R.id.date_text);
-        Button buttonSelectImage = ll.findViewById(R.id.buttonSelectImage);
-        taskImage = ll.findViewById(R.id.taskImage);
+        Button buttonSelectAttachment = ll.findViewById(R.id.buttonSelectImage);
+        attachmentView = ll.findViewById(R.id.attachment);
 
 
-        builder.setView(ll)
-                .setPositiveButton("Dodaj", (dialog, id) -> {
-                    if(newDateTime.isEmpty())
-                    {
-                        Toast.makeText(context, "Wybierz wszystkie opcje!", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+        builder.setView(ll).setPositiveButton("Dodaj", (dialog, id) -> {
+                    if (newDateTime.isEmpty()) {
+                        Toast.makeText(context, "Nie wybrano daty!", Toast.LENGTH_SHORT).show();
+                    } else {
                         String newTitle = editText.getText().toString();
-                        taskArrayList.add(new Task(newTitle, newDateTime, context));
-                    }
+                        String newDescription = editText2.getText().toString();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+                        String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
+                        taskArrayList.add(new Task(newTitle, newDescription, newDateTime, createdDateTime, selectedFileUri, context));
+                    }
                 })
                 .setNegativeButton("Anuluj", (dialog, id) -> dialog.cancel());
+
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -96,11 +91,15 @@ public class AddTaskWindow extends DialogFragment {
             }
         });
 
-        buttonSelectImage.setOnClickListener(new View.OnClickListener() {
+        buttonSelectAttachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+                startActivityForResult(intent, PICK_FILE_REQUEST);
+
             }
         });
 
@@ -111,21 +110,12 @@ public class AddTaskWindow extends DialogFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            selectedImageUri = data.getData();
-
-            try {
-                InputStream imageStream = context.getContentResolver().openInputStream(selectedImageUri);
-                Bitmap originalBitmap = BitmapFactory.decodeStream(imageStream);
-
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalBitmap, 128, 128, false);
-
-                taskImage.setImageBitmap(scaledBitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            selectedFileUri = data.getData();
+            attachmentView.setText(selectedFileUri.toString());
         }
     }
+
 
 
 

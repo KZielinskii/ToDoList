@@ -90,10 +90,10 @@
                 android:id="@+id/buttonSelectImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/choose_image" />
+                android:text="@string/choose_file" />
 
-            <ImageView
-                android:id="@+id/taskImage"
+            <TextView
+                android:id="@+id/attachment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

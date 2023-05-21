@@ -1,13 +1,11 @@
 package com.example.todolist.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -42,7 +40,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
 
         TextView titleView = itemView.findViewById(R.id.title);
         TextView descriptonView = itemView.findViewById(R.id.description);
-        ImageView icon = itemView.findViewById(R.id.taskImage);
+        ImageView icon = itemView.findViewById(R.id.taskAttachment);
 
         titleView.setText(task.getTitle());
 
