@@ -15,15 +15,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TaskListAdapter taskListAdapter;
-    private ArrayList<Task> taskArrayList;
-    private ListView listView;
+    public static TaskListAdapter taskListAdapter;
+    private static ArrayList<Task> taskArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        listView = findViewById(R.id.localities_list);
         taskArrayList = new ArrayList<>();
         addSavedTasks();
 
@@ -35,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         addTask.setOnClickListener(view -> {
             AddTaskWindow dialogFragment = new AddTaskWindow(taskArrayList, getApplicationContext());
             dialogFragment.show(getSupportFragmentManager(), "show_add_window_dialog");
+            taskListAdapter.notifyDataSetChanged();
         });
 
     }

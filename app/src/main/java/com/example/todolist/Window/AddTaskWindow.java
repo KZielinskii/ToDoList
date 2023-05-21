@@ -2,6 +2,8 @@ package com.example.todolist.Window;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.todolist.Activity.MainActivity.taskListAdapter;
+
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -69,6 +71,7 @@ public class AddTaskWindow extends DialogFragment {
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
                         taskArrayList.add(new Task(newTitle, newDescription, newDateTime, createdDateTime, selectedFileUri, context));
+                        taskListAdapter.notifyDataSetChanged();
                     }
                 })
                 .setNegativeButton("Anuluj", (dialog, id) -> dialog.cancel());
@@ -84,23 +87,15 @@ public class AddTaskWindow extends DialogFragment {
         positiveButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonSize);
         negativeButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, buttonSize);
 
-        buttonSelectDateTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDateTimePickerDialog();
-            }
-        });
+        buttonSelectDateTime.setOnClickListener(v -> showDateTimePickerDialog());
 
-        buttonSelectAttachment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
+        buttonSelectAttachment.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.setType("*/*");
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-                startActivityForResult(intent, PICK_FILE_REQUEST);
+            startActivityForResult(intent, PICK_FILE_REQUEST);
 
-            }
         });
 
         return dialog;

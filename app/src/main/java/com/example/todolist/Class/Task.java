@@ -5,14 +5,19 @@ import android.net.Uri;
 
 public class Task {
     private String title;
-    private String date;
+    private String description;
     private Context context;
+    private String newDateTime;
+    private String createdDateTime;
+    private Uri selectedFileUri;
 
-    public Task(String title, String date, String newDateTime, String createdDateTime, Uri selectedImageUri, Context context)
-    {
+    public Task(String title, String description, String newDateTime, String createdDateTime, Uri selectedFileUri, Context context) {
         this.title = title;
-        this.date = date;
+        this.description = description;
         this.context = context;
+        this.newDateTime = newDateTime;
+        this.createdDateTime = createdDateTime;
+        this.selectedFileUri = selectedFileUri;
     }
 
     public String getTitle() {
@@ -23,12 +28,12 @@ public class Task {
         this.title = title;
     }
 
-    public String getDate() {
-        return date;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Context getContext() {
@@ -37,5 +42,29 @@ public class Task {
 
     public void setContext(Context context) {
         this.context = context;
+    }
+
+    public String getNewDateTime() {
+        return newDateTime;
+    }
+
+    public void setNewDateTime(String newDateTime) {
+        this.newDateTime = newDateTime;
+    }
+
+    public String getCreatedDateTime() {
+        return createdDateTime;
+    }
+
+    public void setCreatedDateTime(String createdDateTime) {
+        this.createdDateTime = createdDateTime;
+    }
+
+    public Uri getSelectedFileUri() {
+        return selectedFileUri;
+    }
+
+    public void setSelectedFileUri(Uri selectedFileUri) {
+        this.selectedFileUri = selectedFileUri;
     }
 }

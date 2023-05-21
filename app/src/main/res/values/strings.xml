@@ -7,4 +7,6 @@
     <string name="choose_file">Wybierz plik:</string>
     <string name="add_title">Tytuł:</string>
     <string name="add_description">Opis:</string>
+    <string name="date">Data:</string>
+    <string name="attachment">Załącznik:</string>
 </resources>
