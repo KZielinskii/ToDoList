@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">ToDoList</string>
+    <string name="ToDo">Lista zadań:</string>
+    <string name="add">Dodaj zadanie:</string>
+    <string name="choose_time">Wybierz godzinę</string>
+    <string name="choose_date">Wybierz datę</string>
+    <string name="choose_image">Wybierz obrazek:</string>
+    <string name="add_title">Tytuł:</string>
+    <string name="add_description">Opis:</string>
+</resources>
