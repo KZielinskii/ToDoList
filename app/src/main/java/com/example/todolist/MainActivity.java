@@ -2,6 +2,7 @@ package com.example.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -26,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
         taskListAdapter = new TaskListAdapter(this, taskArrayList);
         ListView listView = findViewById(R.id.localities_list);
         listView.setAdapter(taskListAdapter);
+
+        ImageButton settings = findViewById(R.id.settings);
+        settings.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+            getApplicationContext().startActivity(intent);
+        });
 
         ImageButton addTask = findViewById(R.id.imageButton);
         addTask.setOnClickListener(view -> {
