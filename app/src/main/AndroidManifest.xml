@@ -27,6 +27,9 @@
         <activity
             android:name=".ItemActivity"
             android:label="Item Activity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Settings Activity" />
     </application>
 
 </manifest>

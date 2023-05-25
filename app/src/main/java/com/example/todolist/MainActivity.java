@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton settings = findViewById(R.id.settings);
         settings.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            getApplicationContext().startActivity(intent);
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
         });
 
         ImageButton addTask = findViewById(R.id.imageButton);
