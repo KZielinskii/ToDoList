@@ -16,4 +16,12 @@
     <string name="Settings">Ustawienia:</string>
     <string name="time_notification">Czas powiadomienia\nprzed zadaniem:</string>
     <string name="on_off_hidden">Ukryj zakończone\nzadania:</string>
+    <string-array name="notification_times">
+        <item>1 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+    </string-array>
+
 </resources>
