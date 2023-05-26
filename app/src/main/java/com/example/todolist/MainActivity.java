@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         String[] projection = {
                 "title",
                 "description",
+                "category",
                 "newDateTime",
                 "createdDateTime",
                 "selectedFileUri"
@@ -70,12 +71,13 @@ public class MainActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
             String newDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
             String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
             String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
             Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
 
-            Task task = new Task(title, description, newDateTime, createdDateTime, selectedFileUri, getApplicationContext(), false);
+            Task task = new Task(title, description, category , newDateTime, createdDateTime, selectedFileUri, getApplicationContext(), false);
             taskList.add(task);
         }
 

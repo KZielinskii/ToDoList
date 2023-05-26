@@ -50,11 +50,15 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         descriptionView.setText(task.getDescription());
         dateView.setText(task.getNewDateTime());
 
+        String category = task.getCategory();
+        int backgroundColor = getCategoryColor(category);
+        itemView.setBackgroundColor(backgroundColor);
+
         if(task.getSelectedFileUri() != null)
         {
-           imageView.setImageResource(R.drawable.ic_positive);
+           imageView.setImageResource(R.drawable.baseline_file_download_24);
         } else {
-            imageView.setImageResource(R.drawable.ic_negative);
+            imageView.setImageResource(R.drawable.baseline_file_download_off_24);
         }
 
         LinearLayout listItem = itemView.findViewById(R.id.list_item);
@@ -68,4 +72,37 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         });
 
         return itemView;
-    }}
+    }
+
+    private int getCategoryColor(String category) {
+        int colorResId;
+        switch (category) {
+            case "Praca":
+                colorResId = R.color.category_praca;
+                break;
+            case "Dom":
+                colorResId = R.color.category_dom;
+                break;
+            case "Nauka":
+                colorResId = R.color.category_nauka;
+                break;
+            case "Zdrowie i fitness":
+                colorResId = R.color.category_zdrowie;
+                break;
+            case "Finanse":
+                colorResId = R.color.category_finanse;
+                break;
+            case "Ważne terminy":
+                colorResId = R.color.category_terminy;
+                break;
+            case "Społeczność":
+                colorResId = R.color.category_spolecznosc;
+                break;
+            default:
+                colorResId = R.color.category_inne;
+                break;
+        }
+        return getContext().getResources().getColor(colorResId);
+    }
+
+}

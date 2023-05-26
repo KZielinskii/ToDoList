@@ -14,9 +14,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +40,8 @@ public class AddTaskWindow extends DialogFragment {
     private TextView dateTimeView;
     private Uri selectedFileUri;
     private TextView attachmentView;
+    private String selectedCategory;
+
 
     public AddTaskWindow(ArrayList<Task> taskArrayList, Context context) {
         this.taskArrayList = taskArrayList;
@@ -56,6 +61,18 @@ public class AddTaskWindow extends DialogFragment {
         dateTimeView = ll.findViewById(R.id.date_text);
         Button buttonSelectAttachment = ll.findViewById(R.id.buttonSelectImage);
         attachmentView = ll.findViewById(R.id.attachment);
+        Spinner categorySpinner = ll.findViewById(R.id.categorySpinner);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedCategory = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedCategory = "Inne";
+            }
+        });
 
 
         builder.setView(ll).setPositiveButton("Dodaj", (dialog, id) -> {
@@ -67,7 +84,7 @@ public class AddTaskWindow extends DialogFragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
-                        taskArrayList.add(new Task(newTitle, newDescription, newDateTime, createdDateTime, selectedFileUri, context, true));
+                        taskArrayList.add(new Task(newTitle, newDescription, selectedCategory, newDateTime, createdDateTime, selectedFileUri, context, true));
                         taskListAdapter.notifyDataSetChanged();
                     }
                 })

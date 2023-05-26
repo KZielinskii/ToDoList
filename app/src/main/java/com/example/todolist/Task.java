@@ -7,15 +7,17 @@ import android.net.Uri;
 
 public class Task {
     private String title;
+    private String category;
     private String description;
     private Context context;
     private String newDateTime;
     private String createdDateTime;
     private Uri selectedFileUri;
 
-    public Task(String title, String description, String newDateTime, String createdDateTime, Uri selectedFileUri, Context context, boolean save) {
+    public Task(String title, String description, String category, String newDateTime, String createdDateTime, Uri selectedFileUri, Context context, boolean save) {
         this.title = title;
         this.description = description;
+        this.category = category;
         this.context = context;
         this.newDateTime = newDateTime;
         this.createdDateTime = createdDateTime;
@@ -30,6 +32,7 @@ public class Task {
         ContentValues values = new ContentValues();
         values.put("title", title);
         values.put("description", description);
+        values.put("category", category);
         values.put("newDateTime", newDateTime);
         values.put("createdDateTime", createdDateTime);
         if (selectedFileUri != null) {
@@ -87,5 +90,15 @@ public class Task {
 
     public void setSelectedFileUri(Uri selectedFileUri) {
         this.selectedFileUri = selectedFileUri;
+    }
+
+    public String getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory(String category)
+    {
+        this.category = category;
     }
 }

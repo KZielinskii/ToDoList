@@ -30,7 +30,8 @@
             android:layout_weight="1" />
         <ImageButton
             android:id="@+id/settings"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
             android:layout_height="match_parent"
             android:src="@drawable/baseline_settings_24"
             android:contentDescription="@string/Settings" />

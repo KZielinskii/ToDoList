@@ -18,6 +18,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "title TEXT," +
                 "description TEXT," +
+                "category TEXT," +
                 "newDateTime TEXT," +
                 "createdDateTime TEXT," +
                 "selectedFileUri TEXT" +
@@ -27,6 +28,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Jeśli chciałbyś zaktualizować schemat bazy danych, możesz umieścić odpowiednią logikę tutaj
     }
+
+
 }
