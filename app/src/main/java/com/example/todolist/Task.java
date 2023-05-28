@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public class Task {
+    private long taskId;
     private String title;
     private String category;
     private String description;
@@ -13,8 +14,10 @@ public class Task {
     private String newDateTime;
     private String createdDateTime;
     private Uri selectedFileUri;
+    private boolean isDone;
 
-    public Task(String title, String description, String category, String newDateTime, String createdDateTime, Uri selectedFileUri, Context context, boolean save) {
+    public Task(long id, String title, String description, String category, String newDateTime, String createdDateTime, Uri selectedFileUri, boolean isDone, Context context, boolean save) {
+        this.taskId = id;
         this.title = title;
         this.description = description;
         this.category = category;
@@ -22,10 +25,12 @@ public class Task {
         this.newDateTime = newDateTime;
         this.createdDateTime = createdDateTime;
         this.selectedFileUri = selectedFileUri;
+        this.isDone = isDone;
         if(save)saveTask();
+
     }
 
-    private void saveTask() {
+    public void saveTask() {
         TaskDBHelper dbHelper = new TaskDBHelper(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -35,15 +40,34 @@ public class Task {
         values.put("category", category);
         values.put("newDateTime", newDateTime);
         values.put("createdDateTime", createdDateTime);
+
+        if (isDone())
+            values.put("isDone", 1);
+        else
+            values.put("isDone", 0);
+
         if (selectedFileUri != null) {
             values.put("selectedFileUri", selectedFileUri.toString());
         }
 
-        db.insert("tasks", null, values);
+        if (taskId > 0) {
+            String[] whereArgs = {String.valueOf(taskId)};
+            db.update("tasks", values, "id = ?", whereArgs);
+        } else {
+            long insertedId = db.insert("tasks", null, values);
+            setTaskId(insertedId);
+        }
+
         db.close();
     }
 
 
+    public long getTaskId() {
+        return taskId;
+    }
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
+    }
     public String getTitle() {
         return title;
     }
@@ -100,5 +124,13 @@ public class Task {
     public void setCategory(String category)
     {
         this.category = category;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 }

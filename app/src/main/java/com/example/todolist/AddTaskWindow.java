@@ -10,8 +10,10 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,11 @@ import android.widget.Toast;
 import androidx.fragment.app.DialogFragment;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -84,7 +91,7 @@ public class AddTaskWindow extends DialogFragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
-                        taskArrayList.add(new Task(newTitle, newDescription, selectedCategory, newDateTime, createdDateTime, selectedFileUri, context, true));
+                        taskArrayList.add(new Task(0, newTitle, newDescription, selectedCategory, newDateTime, createdDateTime, selectedFileUri, false , context, true));
                         taskListAdapter.notifyDataSetChanged();
                     }
                 })
@@ -120,12 +127,11 @@ public class AddTaskWindow extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            selectedFileUri = data.getData();
+            Uri selectedFileUri = data.getData();
             attachmentView.setText(selectedFileUri.toString());
+            copyFileToInternalStorage(selectedFileUri);
         }
     }
-
-
 
 
     private void showDateTimePickerDialog() {
@@ -161,6 +167,52 @@ public class AddTaskWindow extends DialogFragment {
         datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
 
         datePickerDialog.show();
+    }
+
+    private void copyFileToInternalStorage(Uri sourceUri) {
+        try {
+            String sourceFileName = getFileNameFromUri(sourceUri);
+
+            InputStream inputStream = context.getContentResolver().openInputStream(sourceUri);
+            File destinationFile = new File(context.getFilesDir(), sourceFileName);
+            OutputStream outputStream = new FileOutputStream(destinationFile);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+            selectedFileUri = Uri.fromFile(destinationFile);
+
+            attachmentView.setText(sourceFileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFileNameFromUri(Uri uri) {
+        String fileName = "";
+        Cursor cursor = null;
+        try {
+            String[] projection = {MediaStore.MediaColumns.DISPLAY_NAME};
+            cursor = context.getContentResolver().query(uri, projection, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
+                fileName = cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return fileName;
     }
 
 }

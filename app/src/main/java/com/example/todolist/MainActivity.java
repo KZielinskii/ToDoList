@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static TaskListAdapter taskListAdapter;
     private static ArrayList<Task> taskArrayList;
+    public static String notificationTime;
+    public static boolean hidenDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +53,14 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] projection = {
+                "id",
                 "title",
                 "description",
                 "category",
                 "newDateTime",
                 "createdDateTime",
-                "selectedFileUri"
+                "selectedFileUri",
+                "isDone"
         };
 
         Cursor cursor = db.query(
@@ -69,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         );
 
         while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
             String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
@@ -76,8 +82,10 @@ public class MainActivity extends AppCompatActivity {
             String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
             String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
             Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
+            int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
+            boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(title, description, category , newDateTime, createdDateTime, selectedFileUri, getApplicationContext(), false);
+            Task task = new Task(id, title, description, category , newDateTime, createdDateTime, selectedFileUri, isTaskDone, getApplicationContext(), false);
             taskList.add(task);
         }
 
@@ -86,4 +94,19 @@ public class MainActivity extends AppCompatActivity {
 
         return taskList;
     }
+
+    private void deleteDatabase() {
+        TaskDBHelper dbHelper = new TaskDBHelper(getApplicationContext());
+        dbHelper.close();
+
+        boolean isDatabaseDeleted = getApplicationContext().deleteDatabase("task.db");
+
+        if (isDatabaseDeleted) {
+            Toast.makeText(this, "Baza danych została usunięta", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Nie udało się usunąć bazy danych", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 }

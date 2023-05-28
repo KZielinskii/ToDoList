@@ -1,22 +1,20 @@
 package com.example.todolist;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.example.todolist.ItemActivity;
-import com.example.todolist.R;
-
-import com.example.todolist.Task;
 
 import java.util.ArrayList;
 
@@ -45,10 +43,23 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         TextView descriptionView = itemView.findViewById(R.id.editText2);
         TextView dateView = itemView.findViewById(R.id.editText3);
         ImageView imageView = itemView.findViewById(R.id.editImage);
+        CheckBox checkBox = itemView.findViewById(R.id.checkbox);
 
         titleView.setText(task.getTitle());
         descriptionView.setText(task.getDescription());
+
         dateView.setText(task.getNewDateTime());
+        checkBox.setChecked(task.isDone());
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isChecked = checkBox.isChecked();
+                task.setDone(isChecked);
+                task.saveTask();
+            }
+        });
+
 
         String category = task.getCategory();
         int backgroundColor = getCategoryColor(category);
@@ -104,5 +115,4 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         }
         return getContext().getResources().getColor(colorResId);
     }
-
 }

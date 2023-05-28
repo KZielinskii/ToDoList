@@ -21,7 +21,8 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 "category TEXT," +
                 "newDateTime TEXT," +
                 "createdDateTime TEXT," +
-                "selectedFileUri TEXT" +
+                "selectedFileUri TEXT," +
+                "isDone INTEGER DEFAULT 0" +
                 ")";
         db.execSQL(createTableQuery);
     }
