@@ -26,6 +26,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MainActivity.hidenDone = isChecked;
+                MainActivity.updateData(getApplicationContext());
             }
         });
 

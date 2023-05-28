@@ -2,6 +2,7 @@ package com.example.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -63,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 "isDone"
         };
 
+        if(hidenDone)
+        {
+            String selection = "isDone = ?";
+            String[] selectionArgs = { "0" };
+        }
+
         Cursor cursor = db.query(
                 "tasks",
                 projection,
@@ -107,6 +114,71 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Nie udało się usunąć bazy danych", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    public static void updateData(Context context) {
+        taskArrayList.clear();
+
+        TaskDBHelper dbHelper = new TaskDBHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                "id",
+                "title",
+                "description",
+                "category",
+                "newDateTime",
+                "createdDateTime",
+                "selectedFileUri",
+                "isDone"
+        };
+        Cursor cursor;
+        if(hidenDone)
+        {
+            String selection = "isDone = ?";
+            String[] selectionArgs = { "0" };
+            cursor = db.query(
+                    "tasks",
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+        }
+        else
+        {
+            cursor = db.query(
+                    "tasks",
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+            );
+        }
+        
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+            String newDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
+            String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
+            String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
+            Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
+            int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
+            boolean isTaskDone = (isDone == 1);
+
+            Task task = new Task(id, title, description, category , newDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+            taskArrayList.add(task);
+        }
+
+        cursor.close();
+        db.close();
+        taskListAdapter.notifyDataSetChanged();
     }
 
 }
