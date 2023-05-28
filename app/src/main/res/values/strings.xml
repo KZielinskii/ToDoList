@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ToDoList</string>
+    <string name="app_name">Lista ToDo</string>
     <string name="ToDo">Lista zadań:</string>
     <string name="add">Dodaj zadanie:</string>
     <string name="choose_time">Wybierz godzinę</string>
