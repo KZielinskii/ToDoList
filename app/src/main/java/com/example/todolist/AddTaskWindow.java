@@ -166,7 +166,6 @@ public class AddTaskWindow extends DialogFragment {
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                                     newDateTime = dateFormat.format(selectedDate);
                                     dateTimeView.setText(newDateTime);
-                                    Toast.makeText(context, "Wybrana data i godzina: " + newDateTime, Toast.LENGTH_SHORT).show();
                                 }
                             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
@@ -243,14 +242,8 @@ public class AddTaskWindow extends DialogFragment {
         calendar.setTime(date);
 
         if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            } else {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
-
+    //TODO inna metoda przekazywania dantch nie przez intent
 }
