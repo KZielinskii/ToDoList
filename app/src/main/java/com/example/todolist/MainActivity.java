@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static TaskListAdapter taskListAdapter;
     private static ArrayList<Task> taskArrayList;
-    public static String notificationTime;
+    public static int notificationTime;
     public static boolean hidenDone;
 
     @Override
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         taskArrayList = addSavedTasks();
+        addSavedSettings();
 
         taskListAdapter = new TaskListAdapter(this, taskArrayList);
         ListView listView = findViewById(R.id.localities_list);
@@ -45,6 +46,12 @@ public class MainActivity extends AppCompatActivity {
             taskListAdapter.notifyDataSetChanged();
         });
 
+    }
+
+    private void addSavedSettings() {
+        notificationTime = 0;
+        hidenDone = false;
+        //TODO
     }
 
     public ArrayList<Task> addSavedTasks() {

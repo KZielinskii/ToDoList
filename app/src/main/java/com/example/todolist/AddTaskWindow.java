@@ -142,7 +142,6 @@ public class AddTaskWindow extends DialogFragment {
         }
     }
 
-
     private void showDateTimePickerDialog() {
         Calendar calendar = Calendar.getInstance();
 
@@ -242,6 +241,9 @@ public class AddTaskWindow extends DialogFragment {
         }
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
+
+        int minutesToSubtract = MainActivity.notificationTime;
+        calendar.add(Calendar.MINUTE, -minutesToSubtract);
 
         if (alarmManager != null) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

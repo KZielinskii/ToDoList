@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="8dp"
+    android:orientation="vertical"
     tools:context=".SettingsActivity">
 
     <TextView
@@ -13,10 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="16dp"
         android:text="@string/Settings"
         android:textSize="@dimen/big_size"
         android:textStyle="bold"
-        android:padding="16dp"
         tools:ignore="MissingConstraints" />
 
     <LinearLayout
@@ -37,7 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="16dp"
             android:paddingTop="16dp"
             tools:ignore="MissingConstraints">
 
@@ -51,16 +50,47 @@
                 android:textSize="@dimen/text_size"
                 android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/notificationTimeSpinner"
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/editTime"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="8dp"
-                android:entries="@array/notification_times" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:inputType="number"
+                android:enabled="false"
+                android:text="0" />
 
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="@string/min" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp"
+            android:gravity="center"
+            tools:ignore="MissingConstraints">
+
+            <Button
+                android:id="@+id/btnEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/edit"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
@@ -71,8 +101,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingBottom="16dp"
             android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             tools:ignore="MissingConstraints">
 
             <TextView

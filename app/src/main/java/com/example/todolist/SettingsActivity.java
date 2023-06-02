@@ -2,24 +2,37 @@ package com.example.todolist;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatToggleButton;
 
-public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class SettingsActivity extends AppCompatActivity {
     private AppCompatToggleButton toggle;
+    private EditText notificationTime;
+    private Button btnEdit;
+    private Button btnSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Spinner notificationTimeSpinner = findViewById(R.id.notificationTimeSpinner);
-        notificationTimeSpinner.setOnItemSelectedListener(this);
+        updateNotificationTime();
+        toggleService();
+        buttonEditService();
+        buttonSaveService();
 
+    }
+    private void updateNotificationTime()
+    {
+        notificationTime = findViewById(R.id.editTime);
+        notificationTime.setText( String.valueOf(MainActivity.notificationTime));
+    }
+    private void toggleService()
+    {
         toggle = findViewById(R.id.toggle);
         toggle.setChecked(MainActivity.hidenDone);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -29,31 +42,38 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 MainActivity.updateData(getApplicationContext());
             }
         });
-
-        int notificationTimeIndex = getIndex(notificationTimeSpinner, MainActivity.notificationTime);
-        if (notificationTimeIndex != -1) {
-            notificationTimeSpinner.setSelection(notificationTimeIndex);
-        }
-
-        MainActivity.notificationTime = notificationTimeSpinner.getSelectedItem().toString();
     }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        MainActivity.notificationTime = parent.getItemAtPosition(position).toString();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-    }
-
-    private int getIndex(Spinner spinner, String value) {
-        for (int i = 0; i < spinner.getCount(); i++) {
-            if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)) {
-                return i;
+    private void buttonEditService() {
+        btnEdit = findViewById(R.id.btnEdit);
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notificationTime.setEnabled(true);
             }
-        }
-        return -1;
+        });
     }
+
+    private void buttonSaveService() {
+        btnSave = findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                notificationTime.setEnabled(false);
+                String newTime = remove0FromTheFront();
+                notificationTime.setText(newTime);
+                MainActivity.notificationTime = Integer.parseInt(newTime);
+            }
+        });
+    }
+    private String remove0FromTheFront()
+    {
+        String stringTime = String.valueOf(notificationTime.getText());
+        int startIndex = 0;
+        while (startIndex < stringTime.length() && stringTime.charAt(startIndex) == '0') {
+            startIndex++;
+        }
+        return stringTime.substring(startIndex);
+    }
+
 }
 
