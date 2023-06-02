@@ -229,7 +229,9 @@ public class AddTaskWindow extends DialogFragment {
         notificationIntent.putExtra("title", task.getTitle());
         notificationIntent.putExtra("description", task.getDescription());
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        int notificationId = (int) System.currentTimeMillis();
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
         Date date = null;
@@ -245,5 +247,4 @@ public class AddTaskWindow extends DialogFragment {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
-    //TODO inna metoda przekazywania dantch nie przez intent
 }
