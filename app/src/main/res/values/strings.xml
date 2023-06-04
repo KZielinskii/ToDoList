@@ -22,6 +22,7 @@
     <string name="Search">Wyszukaj...</string>
     <string name="choose_category">Wybierz widoczną\nkoategorię:</string>
     <string name="all">Wszystkie</string>
+    <string name="Notifications">Powiadomienia</string>
     <string-array name="notification_times">
         <item>1 min</item>
         <item>5 min</item>
