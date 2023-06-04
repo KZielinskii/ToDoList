@@ -8,6 +8,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<Task> taskArrayList;
     public static int notificationTime;
     public static boolean hidenDone;
+    private static EditText searchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,23 @@ public class MainActivity extends AppCompatActivity {
             taskListAdapter.notifyDataSetChanged();
         });
 
+        searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String searchText = editable.toString();
+                ArrayList<Task> filteredTasks = filterTasksByTitle(searchText);
+                taskListAdapter.updateData(filteredTasks);
+            }
+        });
     }
 
     private void addSavedSettings() {
@@ -185,6 +206,30 @@ public class MainActivity extends AppCompatActivity {
 
         cursor.close();
         db.close();
+        taskListAdapter.notifyDataSetChanged();
+    }
+    private ArrayList<Task> filterTasksByTitle(String searchText) {
+        ArrayList<Task> filteredTasks = new ArrayList<>();
+        updateData(getApplicationContext());
+        for (Task task : taskArrayList) {
+            if (task.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                filteredTasks.add(task);
+            }
+        }
+        return filteredTasks;
+    }
+    private void updateSearchData()
+    {
+        if (!searchEditText.getText().toString().isEmpty()) {
+            ArrayList<Task> taskList = new ArrayList<>();
+            String searchText = searchEditText.getText().toString();
+            for (Task task : taskArrayList) {
+                if (task.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                    taskList.add(task);
+                }
+            }
+            taskArrayList = taskList;
+        }
         taskListAdapter.notifyDataSetChanged();
     }
 

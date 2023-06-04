@@ -19,6 +19,7 @@
     <string name="min">min</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
+    <string name="Search">Wyszukaj...</string>
     <string-array name="notification_times">
         <item>1 min</item>
         <item>5 min</item>

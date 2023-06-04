@@ -1,5 +1,7 @@
 package com.example.todolist;
 
+import static com.example.todolist.MainActivity.taskListAdapter;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +21,7 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
-    private ArrayList<Task> taskArrayList;
+    private static ArrayList<Task> taskArrayList;
     private Context context;
 
     public TaskListAdapter(Context context, ArrayList<Task> taskArrayList) {
@@ -57,6 +59,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
                 boolean isChecked = checkBox.isChecked();
                 task.setDone(isChecked);
                 task.saveTask();
+                MainActivity.updateData(context);
             }
         });
 
@@ -115,4 +118,11 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         }
         return getContext().getResources().getColor(colorResId);
     }
+
+    public static void updateData(ArrayList<Task> tasks) {
+        taskArrayList.clear();
+        taskArrayList.addAll(tasks);
+        taskListAdapter.notifyDataSetChanged();
+    }
+
 }
