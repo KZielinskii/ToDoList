@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.List;
+
 public class TaskDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "task.db";
     private static final int DATABASE_VERSION = 1;
@@ -30,6 +32,4 @@ public class TaskDBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
-
-
 }

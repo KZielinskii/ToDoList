@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static ArrayList<Task> taskArrayList;
     public static int notificationTime;
     public static boolean hidenDone;
+    public static String selectedCategory;
     private static EditText searchEditText;
 
     @Override
@@ -72,9 +73,31 @@ public class MainActivity extends AppCompatActivity {
     private void addSavedSettings() {
         notificationTime = 0;
         hidenDone = false;
-        //TODO
+        //TODO do zrobienia 1
     }
+    private ArrayList<Task> filterTasksByTitle(String searchText) {
+        ArrayList<Task> filteredTasks = new ArrayList<>();
+        getDataByCategory(getApplicationContext());
+        for (Task task : taskArrayList) {
+            if (task.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
+                filteredTasks.add(task);
+            }
+        }
+        return filteredTasks;
+    }
+    private void deleteDatabase() {
+        TaskDBHelper dbHelper = new TaskDBHelper(getApplicationContext());
+        dbHelper.close();
 
+        boolean isDatabaseDeleted = getApplicationContext().deleteDatabase("task.db");
+
+        if (isDatabaseDeleted) {
+            Toast.makeText(this, "Baza danych została usunięta", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Nie udało się usunąć bazy danych", Toast.LENGTH_SHORT).show();
+        }
+
+    }
     public ArrayList<Task> addSavedTasks() {
         ArrayList<Task> taskList = new ArrayList<>();
 
@@ -130,26 +153,11 @@ public class MainActivity extends AppCompatActivity {
         return taskList;
     }
 
-    private void deleteDatabase() {
-        TaskDBHelper dbHelper = new TaskDBHelper(getApplicationContext());
-        dbHelper.close();
-
-        boolean isDatabaseDeleted = getApplicationContext().deleteDatabase("task.db");
-
-        if (isDatabaseDeleted) {
-            Toast.makeText(this, "Baza danych została usunięta", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Nie udało się usunąć bazy danych", Toast.LENGTH_SHORT).show();
-        }
-
-    }
-
-    public static void updateData(Context context) {
+    public static void getDataByCategory(Context context) {
         taskArrayList.clear();
 
         TaskDBHelper dbHelper = new TaskDBHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
         String[] projection = {
                 "id",
                 "title",
@@ -160,9 +168,75 @@ public class MainActivity extends AppCompatActivity {
                 "selectedFileUri",
                 "isDone"
         };
+
         Cursor cursor;
-        if(hidenDone)
-        {
+
+        if (hidenDone) {
+            String selection = "category = ? AND isDone = ?";
+            String[] selectionArgs = { selectedCategory, "0" };
+             cursor = db.query(
+                    "tasks",
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+        }
+        else {
+            String selection = "category = ?";
+            String[] selectionArgs = { selectedCategory };
+            cursor = db.query(
+                    "tasks",
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            String newDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
+            String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
+            String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
+            Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
+            int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
+            boolean isTaskDone = (isDone == 1);
+
+            Task task = new Task(id, title, description, selectedCategory , newDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+            taskArrayList.add(task);
+        }
+
+        cursor.close();
+        db.close();
+        taskListAdapter.notifyDataSetChanged();
+    }
+
+    public static void getDataAllCategory(Context context) {
+        taskArrayList.clear();
+
+        TaskDBHelper dbHelper = new TaskDBHelper(context);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] projection = {
+                "id",
+                "title",
+                "description",
+                "category",
+                "newDateTime",
+                "createdDateTime",
+                "selectedFileUri",
+                "isDone"
+        };
+
+        Cursor cursor;
+
+        if (hidenDone) {
             String selection = "isDone = ?";
             String[] selectionArgs = { "0" };
             cursor = db.query(
@@ -175,8 +249,7 @@ public class MainActivity extends AppCompatActivity {
                     null
             );
         }
-        else
-        {
+        else {
             cursor = db.query(
                     "tasks",
                     projection,
@@ -187,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                     null
             );
         }
-        
+
         while (cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
@@ -206,30 +279,6 @@ public class MainActivity extends AppCompatActivity {
 
         cursor.close();
         db.close();
-        taskListAdapter.notifyDataSetChanged();
-    }
-    private ArrayList<Task> filterTasksByTitle(String searchText) {
-        ArrayList<Task> filteredTasks = new ArrayList<>();
-        updateData(getApplicationContext());
-        for (Task task : taskArrayList) {
-            if (task.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
-                filteredTasks.add(task);
-            }
-        }
-        return filteredTasks;
-    }
-    private void updateSearchData()
-    {
-        if (!searchEditText.getText().toString().isEmpty()) {
-            ArrayList<Task> taskList = new ArrayList<>();
-            String searchText = searchEditText.getText().toString();
-            for (Task task : taskArrayList) {
-                if (task.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
-                    taskList.add(task);
-                }
-            }
-            taskArrayList = taskList;
-        }
         taskListAdapter.notifyDataSetChanged();
     }
 

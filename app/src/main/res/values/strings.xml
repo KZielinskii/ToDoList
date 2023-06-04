@@ -20,6 +20,8 @@
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="Search">Wyszukaj...</string>
+    <string name="choose_category">Wybierz widoczną\nkoategorię:</string>
+    <string name="all">Wszystkie</string>
     <string-array name="notification_times">
         <item>1 min</item>
         <item>5 min</item>
@@ -28,6 +30,17 @@
         <item>30 min</item>
     </string-array>
     <string-array name="category_spinner">
+        <item>Praca</item>
+        <item>Dom</item>
+        <item>Nauka</item>
+        <item>Zdrowie i fitness</item>
+        <item>Finanse</item>
+        <item>Ważne terminy</item>
+        <item>Społeczność</item>
+        <item>Inne</item>
+    </string-array>
+    <string-array name="category_spinner_settings">
+        <item>@string/all</item>
         <item>Praca</item>
         <item>Dom</item>
         <item>Nauka</item>

@@ -18,6 +18,6 @@ public class ItemActivity extends AppCompatActivity {
 
         position = getIntent().getIntExtra("item_index", -1);
         title = getIntent().getStringExtra("task_title");
-        
+        //TODO do zrobienia 2
     }
 }
