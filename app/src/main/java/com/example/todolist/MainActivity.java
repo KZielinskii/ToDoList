@@ -73,17 +73,27 @@ public class MainActivity extends AppCompatActivity {
     private void addSavedSettings() {
         notificationTime = 0;
         hidenDone = false;
+        selectedCategory = getResources().getString(R.string.all);
         //TODO do zrobienia 1
     }
     private ArrayList<Task> filterTasksByTitle(String searchText) {
         ArrayList<Task> filteredTasks = new ArrayList<>();
-        getDataByCategory(getApplicationContext());
+        updateData(getApplicationContext());
         for (Task task : taskArrayList) {
             if (task.getTitle().toLowerCase().contains(searchText.toLowerCase())) {
                 filteredTasks.add(task);
             }
         }
         return filteredTasks;
+    }
+
+    public static void updateData(Context context)
+    {
+        if(MainActivity.selectedCategory.equals(context.getResources().getString(R.string.all))) {
+            MainActivity.getDataAllCategory(context);
+        }else {
+            MainActivity.getDataByCategory(context);
+        }
     }
     private void deleteDatabase() {
         TaskDBHelper dbHelper = new TaskDBHelper(getApplicationContext());

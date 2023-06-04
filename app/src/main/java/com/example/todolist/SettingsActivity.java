@@ -1,6 +1,7 @@
 package com.example.todolist;
 
 import static com.example.todolist.MainActivity.taskListAdapter;
+import static com.example.todolist.MainActivity.updateData;
 
 import android.os.Bundle;
 import android.view.View;
@@ -78,12 +79,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MainActivity.hidenDone = isChecked;
-                
-                if(MainActivity.selectedCategory.equals(getResources().getString(R.string.all))) {
-                    MainActivity.getDataAllCategory(getApplicationContext());
-                }else {
-                    MainActivity.getDataByCategory(getApplicationContext());
-                }
+
+                updateData(getApplicationContext());
             }
         });
     }
@@ -102,14 +99,8 @@ public class SettingsActivity extends AppCompatActivity {
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCategory = parent.getItemAtPosition(position).toString();
-                MainActivity.selectedCategory = selectedCategory;
-                if(selectedCategory.equals(getResources().getString(R.string.all))) {
-                    MainActivity.getDataAllCategory(getApplicationContext());
-                }else {
-                    MainActivity.getDataByCategory(getApplicationContext());
-                }
-
+                MainActivity.selectedCategory = parent.getItemAtPosition(position).toString();
+                updateData(getApplicationContext());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
