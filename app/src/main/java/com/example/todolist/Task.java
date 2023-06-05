@@ -11,18 +11,18 @@ public class Task {
     private String category;
     private String description;
     private Context context;
-    private String newDateTime;
+    private String notificationDateTime;
     private String createdDateTime;
     private Uri selectedFileUri;
     private boolean isDone;
 
-    public Task(long id, String title, String description, String category, String newDateTime, String createdDateTime, Uri selectedFileUri, boolean isDone, Context context, boolean save) {
+    public Task(long id, String title, String description, String category, String notificationDateTime, String createdDateTime, Uri selectedFileUri, boolean isDone, Context context, boolean save) {
         this.taskId = id;
         this.title = title;
         this.description = description;
         this.category = category;
         this.context = context;
-        this.newDateTime = newDateTime;
+        this.notificationDateTime = notificationDateTime;
         this.createdDateTime = createdDateTime;
         this.selectedFileUri = selectedFileUri;
         this.isDone = isDone;
@@ -38,7 +38,7 @@ public class Task {
         values.put("title", title);
         values.put("description", description);
         values.put("category", category);
-        values.put("newDateTime", newDateTime);
+        values.put("newDateTime", notificationDateTime);
         values.put("createdDateTime", createdDateTime);
 
         if (isDone())
@@ -92,12 +92,13 @@ public class Task {
         this.context = context;
     }
 
-    public String getNewDateTime() {
-        return newDateTime;
+    public String getNotificationDateTime() {
+        return notificationDateTime;
     }
 
-    public void setNewDateTime(String newDateTime) {
-        this.newDateTime = newDateTime;
+    public void setNotificationDateTime(String notificationDateTime) {
+        this.notificationDateTime = notificationDateTime;
+
     }
 
     public String getCreatedDateTime() {

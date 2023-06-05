@@ -17,11 +17,7 @@ import androidx.appcompat.widget.AppCompatToggleButton;
 import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity {
-    private AppCompatToggleButton toggle;
     private EditText notificationTime;
-    private Button btnEdit;
-    private Button btnSave;
-    private Spinner categorySpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
         notificationTime.setText( String.valueOf(MainActivity.notificationTime));
     }
     private void buttonEditService() {
-        btnEdit = findViewById(R.id.btnEdit);
+        Button btnEdit = findViewById(R.id.btnEdit);
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void buttonSaveService() {
-        btnSave = findViewById(R.id.btnSave);
+        Button btnSave = findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
     private void toggleService()
     {
-        toggle = findViewById(R.id.toggle);
+        AppCompatToggleButton toggle = findViewById(R.id.toggle);
         toggle.setChecked(MainActivity.hidenDone);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -85,7 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
     private void spinnerService() {
-        categorySpinner = findViewById(R.id.categorySpinner);
+        Spinner categorySpinner = findViewById(R.id.categorySpinner);
 
         int activeCategoryIndex = 0;
         String[] categories = getResources().getStringArray(R.array.category_spinner_settings);

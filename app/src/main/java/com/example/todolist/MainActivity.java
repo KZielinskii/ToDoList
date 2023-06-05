@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     public static int notificationTime;
     public static boolean hidenDone;
     public static String selectedCategory;
-    private static EditText searchEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             taskListAdapter.notifyDataSetChanged();
         });
 
-        searchEditText = findViewById(R.id.searchEditText);
+        EditText searchEditText = findViewById(R.id.searchEditText);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -146,14 +145,14 @@ public class MainActivity extends AppCompatActivity {
             String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
             String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
-            String newDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
+            String notificationDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
             String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
             String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
             Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
             int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
             boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(id, title, description, category , newDateTime, createdDateTime, selectedFileUri, isTaskDone, getApplicationContext(), false);
+            Task task = new Task(id, title, description, category , notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, getApplicationContext(), false);
             taskList.add(task);
         }
 
@@ -212,14 +211,14 @@ public class MainActivity extends AppCompatActivity {
             int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
             String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
-            String newDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
+            String notificationDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
             String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
             String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
             Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
             int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
             boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(id, title, description, selectedCategory , newDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+            Task task = new Task(id, title, description, selectedCategory , notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
             taskArrayList.add(task);
         }
 
@@ -276,14 +275,14 @@ public class MainActivity extends AppCompatActivity {
             String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
             String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
             String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
-            String newDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
+            String notificationDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
             String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
             String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
             Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
             int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
             boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(id, title, description, category , newDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+            Task task = new Task(id, title, description, category , notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
             taskArrayList.add(task);
         }
 
@@ -293,3 +292,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+//TODO powiadomienia nie przychodzą kiedy się wyłączy i włączy aplikacjię
+//TODO dodać do bazy danych czy włączone są powiadomienia czy nie
+//TODO poprawić wygląd itemu
+//TODO zapisać ustawienia aplikacji w pamięci urządzenia
+//TODO poprawcować nad wyglądem całej aplikacji

@@ -2,10 +2,8 @@ package com.example.todolist;
 
 import static com.example.todolist.MainActivity.taskListAdapter;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +48,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         titleView.setText(task.getTitle());
         descriptionView.setText(task.getDescription());
 
-        dateView.setText(task.getNewDateTime());
+        dateView.setText(task.getNotificationDateTime());
         checkBox.setChecked(task.isDone());
 
         checkBox.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +78,11 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             Intent intent = new Intent(getContext(), ItemActivity.class);
             intent.putExtra("item_index", position);
             intent.putExtra("task_title", task.getTitle());
-            //todo inne elementy
+            intent.putExtra("task_description", task.getDescription());
+            intent.putExtra("task_category", task.getCategory());
+            intent.putExtra("task_notification_date", task.getNotificationDateTime());
+            intent.putExtra("task_create_date", task.getCreatedDateTime());
+            intent.putExtra("task_file", task.getSelectedFileUri());
 
             getContext().startActivity(intent);
         });
