@@ -12,8 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -27,8 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.SystemClock;
 
 
 import androidx.fragment.app.DialogFragment;
@@ -50,7 +48,7 @@ public class AddTaskWindow extends DialogFragment {
     private static final int PICK_FILE_REQUEST = 1;
     private ArrayList<Task> taskArrayList;
     private Context context;
-    private String newDateTime;
+    private String notificationDateTime;
     private TextView dateTimeView;
     private Uri selectedFileUri;
     private TextView attachmentView;
@@ -67,7 +65,7 @@ public class AddTaskWindow extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.add_task_window, null);
-        newDateTime = "";
+        notificationDateTime = "";
 
         EditText editText = ll.findViewById(R.id.editText);
         EditText editText2 = ll.findViewById(R.id.editText2);
@@ -90,7 +88,7 @@ public class AddTaskWindow extends DialogFragment {
 
 
         builder.setView(ll).setPositiveButton("Dodaj", (dialog, id) -> {
-                    if (newDateTime.isEmpty()) {
+                    if (notificationDateTime.isEmpty()) {
                         Toast.makeText(context, "Nie wybrano daty!", Toast.LENGTH_SHORT).show();
                     } else {
                         String newTitle = editText.getText().toString();
@@ -98,7 +96,7 @@ public class AddTaskWindow extends DialogFragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
-                        Task task = new Task(0, newTitle, newDescription, selectedCategory, newDateTime, createdDateTime, selectedFileUri, false , context, true);
+                        Task task = new Task(0, newTitle, newDescription, selectedCategory, notificationDateTime, createdDateTime, selectedFileUri, false , context, true);
                         taskArrayList.add(task);
                         taskListAdapter.notifyDataSetChanged();
                         scheduleNotification(task);
@@ -136,9 +134,9 @@ public class AddTaskWindow extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_FILE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri selectedFileUri = data.getData();
+            selectedFileUri = data.getData();
             attachmentView.setText(selectedFileUri.toString());
-            copyFileToInternalStorage(selectedFileUri);
+            copyFileToExternalStorage(selectedFileUri);
         }
     }
 
@@ -163,8 +161,8 @@ public class AddTaskWindow extends DialogFragment {
                                     Toast.makeText(context, "Wybrana data i godzina muszą być późniejsze niż obecna.", Toast.LENGTH_SHORT).show();
                                 } else {
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
-                                    newDateTime = dateFormat.format(selectedDate);
-                                    dateTimeView.setText(newDateTime);
+                                    notificationDateTime = dateFormat.format(selectedDate);
+                                    dateTimeView.setText(notificationDateTime);
                                 }
                             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
@@ -176,12 +174,20 @@ public class AddTaskWindow extends DialogFragment {
         datePickerDialog.show();
     }
 
-    private void copyFileToInternalStorage(Uri sourceUri) {
+    private void copyFileToExternalStorage(Uri sourceUri) {
         try {
             String sourceFileName = getFileNameFromUri(sourceUri);
 
             InputStream inputStream = context.getContentResolver().openInputStream(sourceUri);
-            File destinationFile = new File(context.getFilesDir(), sourceFileName);
+            File externalDir = Environment.getExternalStorageDirectory();
+            File appDir = new File(externalDir, "NazwaTwojejAplikacji");
+            if (!appDir.exists()) {
+                if (!appDir.mkdirs()) {
+
+                    return;
+                }
+            }
+            File destinationFile = new File(appDir, sourceFileName);
             OutputStream outputStream = new FileOutputStream(destinationFile);
 
             byte[] buffer = new byte[1024];
@@ -235,7 +241,7 @@ public class AddTaskWindow extends DialogFragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
         Date date = null;
         try {
-            date = dateFormat.parse(task.getNewDateTime());
+            date = dateFormat.parse(task.getNotificationDateTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
