@@ -1,5 +1,6 @@
 package com.example.todolist;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -91,5 +92,34 @@ public class TaskDBHelper extends SQLiteOpenHelper {
 
         return taskList;
     }
+
+    public void updateTaskById(Long taskId, String newTitle, String newDescription, String newCategory, String newDateTime, Uri newSelectedFileUri, boolean newIsDone, boolean newIsNotification) {
+        int putIntDone = 0;
+        int putIntNotification = 0;
+        if(newIsDone) putIntDone = 1;
+        if(newIsNotification) putIntNotification = 1;
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("title", newTitle);
+        values.put("description", newDescription);
+        values.put("category", newCategory);
+        values.put("newDateTime", newDateTime);
+        if(newSelectedFileUri!=null) {
+            values.put("selectedFileUri", newSelectedFileUri.toString()); // todo uri
+        }
+        values.put("isDone", putIntDone);
+        values.put("isNotification", putIntNotification);
+
+        String whereClause = "id = ?";
+        String[] whereArgs = {String.valueOf(taskId)};
+
+        db.update("tasks", values, whereClause, whereArgs);
+
+        db.close();
+    }
+
+
 
 }

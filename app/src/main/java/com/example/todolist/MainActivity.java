@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public static int notificationTime;
     public static boolean hidenDone;
     public static String selectedCategory;
-    private static TaskDBHelper taskDBHelper;
+    public static TaskDBHelper taskDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +114,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-//TODO poprawić wygląd itemu
-//TODO poprawcować nad wyglądem całej aplikacji

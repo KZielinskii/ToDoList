@@ -54,9 +54,9 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
                 boolean isChecked = checkBox.isChecked();
-                task.setDone(isChecked);
-                task.saveTask();
+                taskDBHelper.updateTaskById(task.getTaskId(), task.getTitle(), task.getDescription(), task.getCategory(), task.getNotificationDateTime(), task.getSelectedFileUri(), isChecked, !isChecked);
                 MainActivity.updateData();
             }
         });
@@ -77,12 +77,15 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         listItem.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), ItemActivity.class);
             intent.putExtra("item_index", position);
+            intent.putExtra("task_id", task.getTaskId());
             intent.putExtra("task_title", task.getTitle());
             intent.putExtra("task_description", task.getDescription());
             intent.putExtra("task_category", task.getCategory());
             intent.putExtra("task_notification_date", task.getNotificationDateTime());
             intent.putExtra("task_create_date", task.getCreatedDateTime());
             intent.putExtra("task_file", task.getSelectedFileUri());
+            intent.putExtra("task_isDone", task.isDone());
+            intent.putExtra("task_isOn", task.isNotification());
 
             getContext().startActivity(intent);
         });

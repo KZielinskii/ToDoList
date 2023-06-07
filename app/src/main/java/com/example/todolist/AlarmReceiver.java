@@ -33,7 +33,6 @@ public class AlarmReceiver extends BroadcastReceiver
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(notificationChannel);
 
-        // Tworzenie powiadomienia
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channel_id")
                 .setSmallIcon(R.drawable.baseline_notifications_24)
                 .setContentTitle(title)

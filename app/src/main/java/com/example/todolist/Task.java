@@ -49,7 +49,7 @@ public class Task {
             values.put("isDone", 0);
 
         if (selectedFileUri != null) {
-            values.put("selectedFileUri", selectedFileUri.toString());
+            values.put("selectedFileUri", selectedFileUri.toString()); //todo uri
         }
 
         if (taskId > 0) {
