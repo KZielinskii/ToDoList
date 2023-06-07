@@ -56,7 +56,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             public void onClick(View view) {
                 TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
                 boolean isChecked = checkBox.isChecked();
-                taskDBHelper.updateTaskById(task.getTaskId(), task.getTitle(), task.getDescription(), task.getCategory(), task.getNotificationDateTime(), task.getSelectedFileUri(), isChecked, !isChecked);
+                taskDBHelper.updateTaskById(task.getTaskId(), task.getTitle(), task.getDescription(), task.getCategory(), task.getNotificationDateTime(), task.getSelectedFileUri(), isChecked, !isChecked, task.getNotificationId());
                 MainActivity.updateData();
             }
         });
@@ -86,6 +86,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             intent.putExtra("task_file", task.getSelectedFileUri());
             intent.putExtra("task_isDone", task.isDone());
             intent.putExtra("task_isOn", task.isNotification());
+            intent.putExtra("task_notification_id", task.getNotificationId());
 
             getContext().startActivity(intent);
         });

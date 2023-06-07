@@ -1,9 +1,17 @@
 package com.example.todolist;
 
+import static com.example.todolist.MainActivity.taskListAdapter;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +29,7 @@ public class ItemActivity extends AppCompatActivity {
     private Uri selectedFileUri;
     private boolean isDone;
     private boolean isOn;
+    private int notificationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +40,8 @@ public class ItemActivity extends AppCompatActivity {
         setAllStrings();
         setAttachmentPreview();
         setChechBox();
+        setButtons();
     }
-
     private void readIntent()
     {
         position = getIntent().getIntExtra("item_index", -1);
@@ -45,6 +54,7 @@ public class ItemActivity extends AppCompatActivity {
         selectedFileUri = getIntent().getParcelableExtra("task_file");
         isDone = getIntent().getBooleanExtra("task_isDone", true);
         isOn = getIntent().getBooleanExtra("task_isOn", true);
+        notificationId = getIntent().getIntExtra("task_notification_id", -1);
     }
 
     private void setAllStrings()
@@ -63,7 +73,7 @@ public class ItemActivity extends AppCompatActivity {
     }
     private void setAttachmentPreview()
     {
-        ImageView fileView = findViewById(R.id.attachmentPreview);
+        ImageButton fileView = findViewById(R.id.attachmentPreview);
         if(selectedFileUri == null)
         {
             fileView.setImageResource(R.drawable.baseline_file_download_off_64);
@@ -79,9 +89,35 @@ public class ItemActivity extends AppCompatActivity {
             public void onClick(View view) {
                 boolean isChecked = checkBox.isChecked();
                 TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
-                taskDBHelper.updateTaskById(id, title, description, category, notificationDateTime, selectedFileUri, isDone, isChecked);
+                taskDBHelper.updateTaskById(id, title, description, category, notificationDateTime, selectedFileUri, isDone, isChecked, notificationId);
                 MainActivity.updateData();
             }
         });
+    }
+    private void setButtons() {
+        Button editTask = findViewById(R.id.buttonEdit);
+        editTask.setOnClickListener(view -> {
+            EditTaskWindow dialogFragment = new EditTaskWindow(getApplicationContext(), position, id, title, category, description, notificationDateTime, selectedFileUri, notificationId);
+            dialogFragment.show(getSupportFragmentManager(), "show_edit_window_dialog");
+            //todo odświeżanie ItemActivity po edycji
+        });
+
+        Button deleteTask = findViewById(R.id.buttonDelete);
+        deleteTask.setOnClickListener(view -> {
+           cancelNotification();
+           MainActivity.taskArrayList.remove(position);
+           taskListAdapter.notifyDataSetChanged();
+           MainActivity.taskDBHelper.deleteTaskById(id);
+        });
+    }
+    private void cancelNotification() {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 }

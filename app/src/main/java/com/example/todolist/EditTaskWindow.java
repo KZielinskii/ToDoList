@@ -1,12 +1,14 @@
 package com.example.todolist;
 
 import static android.app.Activity.RESULT_OK;
-
+import static com.example.todolist.MainActivity.notificationTime;
 import static com.example.todolist.MainActivity.taskListAdapter;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,12 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-
 
 import androidx.fragment.app.DialogFragment;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,21 +42,31 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class AddTaskWindow extends DialogFragment {
+public class EditTaskWindow extends DialogFragment {
     private static final int PICK_FILE_REQUEST = 1;
-    private ArrayList<Task> taskArrayList;
     private Context context;
+    private Long id;
+    private int position;
+    private String title;
+    private String category;
+    private String description;
     private String notificationDateTime;
-    private TextView dateTimeView;
     private Uri selectedFileUri;
-    private TextView attachmentView;
-    private String selectedCategory;
     private int notificationId;
+    private TextView dateTimeView;
+    private TextView attachmentView;
 
 
-    public AddTaskWindow(ArrayList<Task> taskArrayList, Context context) {
-        this.taskArrayList = taskArrayList;
+    public EditTaskWindow(Context context, int position,Long id, String title, String category, String description, String notificationDateTime, Uri selectedFileUri, int notificationId) {
         this.context = context;
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.description = description;
+        this.notificationDateTime = notificationDateTime;
+        this.selectedFileUri = selectedFileUri;
+        this.notificationId = notificationId;
+        this.position = position;
     }
 
     @Override
@@ -66,39 +74,55 @@ public class AddTaskWindow extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         LinearLayout ll = (LinearLayout) inflater.inflate(R.layout.add_task_window, null);
-        notificationDateTime = "";
 
         EditText editText = ll.findViewById(R.id.editText);
+        editText.setText(title);
         EditText editText2 = ll.findViewById(R.id.editText2);
+        editText2.setText(description);
         Button buttonSelectDateTime = ll.findViewById(R.id.buttonSelectDateTime);
         dateTimeView = ll.findViewById(R.id.date_text);
         Button buttonSelectAttachment = ll.findViewById(R.id.buttonSelectImage);
         attachmentView = ll.findViewById(R.id.attachment);
+        dateTimeView.setText(notificationDateTime);
+
         Spinner categorySpinner = ll.findViewById(R.id.categorySpinner);
+        String[] categories = getResources().getStringArray(R.array.category_spinner);
+        int categoryIndex = -1;
+        for (int i = 0; i < categories.length; i++) {
+            if (categories[i].equals(category)) {
+                categoryIndex = i;
+                break;
+            }
+        }
+        if (categoryIndex != -1) {
+            categorySpinner.setSelection(categoryIndex);
+        }
+
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedCategory = parent.getItemAtPosition(position).toString();
+                category = parent.getItemAtPosition(position).toString();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                selectedCategory = "Inne";
+                category = "Inne";
             }
         });
 
 
-        builder.setView(ll).setPositiveButton("Dodaj", (dialog, id) -> {
+        builder.setView(ll).setPositiveButton("Edytuj", (dialog, id) -> {
                     if (notificationDateTime.isEmpty()) {
                         Toast.makeText(context, "Nie wybrano daty!", Toast.LENGTH_SHORT).show();
                     } else {
+                        cancelNotification();
                         String newTitle = editText.getText().toString();
                         String newDescription = editText2.getText().toString();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
-                        Task task = new Task(0, newTitle, newDescription, selectedCategory, notificationDateTime, createdDateTime, selectedFileUri, false , true, notificationId, context, true);
-                        taskArrayList.add(task);
+                        Task task = new Task(0, newTitle, newDescription, category, notificationDateTime, createdDateTime, selectedFileUri, false , true, notificationId, context, true);
+                        MainActivity.taskArrayList.set(position ,task);
                         taskListAdapter.notifyDataSetChanged();
                         scheduleNotification(task);
                     }
@@ -256,4 +280,16 @@ public class AddTaskWindow extends DialogFragment {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
+
+    private void cancelNotification() {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
 }

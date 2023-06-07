@@ -11,14 +11,14 @@
     <string name="attachment">Załącznik:</string>
     <string name="done">Ukończono.</string>
     <string name="category">Kategoria:</string>
-    <string name="delete">Usuń:</string>
+    <string name="delete">Usuń</string>
     <string name="creating_date">Data utworzenia:</string>
     <string name="Settings">Ustawienia:</string>
     <string name="time_notification">Czas powiadomienia\nprzed zadaniem:</string>
     <string name="on_off_hidden">Ukryj zakończone\nzadania:</string>
     <string name="min">min</string>
-    <string name="edit">Edit</string>
-    <string name="save">Save</string>
+    <string name="edit">Edytuj</string>
+    <string name="save">Zapisz</string>
     <string name="Search">Wyszukaj...</string>
     <string name="choose_category">Wybierz widoczną\nkoategorię:</string>
     <string name="all">Wszystkie</string>

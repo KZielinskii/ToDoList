@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static TaskListAdapter taskListAdapter;
-    private static ArrayList<Task> taskArrayList;
+    public static ArrayList<Task> taskArrayList;
     public static int notificationTime;
     public static boolean hidenDone;
     public static String selectedCategory;
@@ -114,3 +114,5 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
+
+//todo sortowanie po czasie

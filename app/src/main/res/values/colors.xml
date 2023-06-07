@@ -10,5 +10,6 @@
     <color name="category_terminy">#B4FFF2</color> <!-- Turkusowy -->
     <color name="category_spolecznosc">#FFC9B4</color> <!-- Pomarańczowy -->
     <color name="category_inne">#FFFFFF</color>
+    <color name="red">#FF5555</color>
 
 </resources>

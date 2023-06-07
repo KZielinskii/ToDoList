@@ -32,7 +32,8 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 "createdDateTime TEXT," +
                 "selectedFileUri TEXT," +
                 "isDone INTEGER DEFAULT 0," +
-                "isNotification INTEGER DEFAULT 1" +
+                "isNotification INTEGER DEFAULT 1," +
+                "notificationId INTEGER DEFAULT 0" +
                 ")";
         db.execSQL(createTableQuery);
     }
@@ -78,10 +79,11 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
                 int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
                 int isNotification = cursor.getInt(cursor.getColumnIndexOrThrow("isNotification"));
+                int notificationId = cursor.getInt(cursor.getColumnIndexOrThrow("notificationId"));
                 boolean isTaskDone = (isDone == 1);
                 boolean isTaskNotification = (isNotification == 1);
 
-                Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, isTaskNotification, context, false);
+                Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, isTaskNotification, notificationId, context, false);
                 taskList.add(task);
 
             } while (cursor.moveToNext());
@@ -93,7 +95,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public void updateTaskById(Long taskId, String newTitle, String newDescription, String newCategory, String newDateTime, Uri newSelectedFileUri, boolean newIsDone, boolean newIsNotification) {
+    public void updateTaskById(Long taskId, String newTitle, String newDescription, String newCategory, String newDateTime, Uri newSelectedFileUri, boolean newIsDone, boolean newIsNotification, int notificationId) {
         int putIntDone = 0;
         int putIntNotification = 0;
         if(newIsDone) putIntDone = 1;
@@ -111,6 +113,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         }
         values.put("isDone", putIntDone);
         values.put("isNotification", putIntNotification);
+        values.put("notificationId", notificationId);
 
         String whereClause = "id = ?";
         String[] whereArgs = {String.valueOf(taskId)};
@@ -120,6 +123,13 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteTaskById(long taskId) {
+        SQLiteDatabase db = getWritableDatabase();
+        String whereClause = "id = ?";
+        String[] whereArgs = {String.valueOf(taskId)};
+        db.delete("tasks", whereClause, whereArgs);
+        db.close();
+    }
 
 
 }
