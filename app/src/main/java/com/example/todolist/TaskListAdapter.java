@@ -57,7 +57,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
                 boolean isChecked = checkBox.isChecked();
                 task.setDone(isChecked);
                 task.saveTask();
-                MainActivity.getDataAllCategory(context);
+                MainActivity.updateData();
             }
         });
 

@@ -68,7 +68,9 @@ public class SettingsActivity extends AppCompatActivity {
         while (startIndex < stringTime.length() && stringTime.charAt(startIndex) == '0') {
             startIndex++;
         }
-        return stringTime.substring(startIndex);
+        String returnString = stringTime.substring(startIndex);
+        if(returnString.equals(""))returnString = "0";
+        return returnString;
     }
     private void toggleService()
     {
@@ -78,7 +80,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MainActivity.hidenDone = isChecked;
-                updateData(getApplicationContext());
+                updateData();
                 saceHidenDone();
             }
         });
@@ -99,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.selectedCategory = parent.getItemAtPosition(position).toString();
-                updateData(getApplicationContext());
+                updateData();
                 saveSelectedCategory();
             }
             @Override
