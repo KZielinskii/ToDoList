@@ -3,6 +3,8 @@ package com.example.todolist;
 import static com.example.todolist.MainActivity.taskListAdapter;
 import static com.example.todolist.MainActivity.updateData;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -55,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String newTime = remove0FromTheFront();
                 notificationTime.setText(newTime);
                 MainActivity.notificationTime = Integer.parseInt(newTime);
+                saveNotificationTime();
             }
         });
     }
@@ -75,8 +78,8 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MainActivity.hidenDone = isChecked;
-
                 updateData(getApplicationContext());
+                saceHidenDone();
             }
         });
     }
@@ -97,11 +100,34 @@ public class SettingsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 MainActivity.selectedCategory = parent.getItemAtPosition(position).toString();
                 updateData(getApplicationContext());
+                saveSelectedCategory();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    private void saveNotificationTime()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefrences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("savedNotificationTime",MainActivity.notificationTime);
+        editor.apply();
+    }
+    private void saceHidenDone()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefrences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("savedHidenDone", MainActivity.hidenDone);
+        editor.apply();
+    }
+    private void saveSelectedCategory()
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefrences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("savedSelectedCategory", MainActivity.selectedCategory);
+        editor.apply();
     }
 }
 

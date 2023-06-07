@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -70,11 +71,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addSavedSettings() {
-        notificationTime = 0;
-        hidenDone = false;
-        selectedCategory = getResources().getString(R.string.all);
-        //TODO do zrobienia 1
+
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefrences", Context.MODE_PRIVATE);
+        notificationTime = sharedPreferences.getInt("savedNotificationTime", 0);
+        hidenDone = sharedPreferences.getBoolean("savedHidenDone", false);
+        selectedCategory = sharedPreferences.getString("savedSelectedCategory", getResources().getString(R.string.all));
     }
+
     private ArrayList<Task> filterTasksByTitle(String searchText) {
         ArrayList<Task> filteredTasks = new ArrayList<>();
         updateData(getApplicationContext());
@@ -86,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
         return filteredTasks;
     }
 
-    public static void updateData(Context context)
-    {
-        if(MainActivity.selectedCategory.equals(context.getResources().getString(R.string.all))) {
+    public static void updateData(Context context) {
+        if (MainActivity.selectedCategory.equals(context.getResources().getString(R.string.all))) {
             MainActivity.getDataAllCategory(context);
-        }else {
+        } else {
             MainActivity.getDataByCategory(context);
         }
     }
+
     private void deleteDatabase() {
         TaskDBHelper dbHelper = new TaskDBHelper(getApplicationContext());
         dbHelper.close();
@@ -107,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     public ArrayList<Task> addSavedTasks() {
         ArrayList<Task> taskList = new ArrayList<>();
 
@@ -124,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
                 "isDone"
         };
 
-        if(hidenDone)
-        {
+        if (hidenDone) {
             String selection = "isDone = ?";
-            String[] selectionArgs = { "0" };
+            String[] selectionArgs = {"0"};
         }
 
         Cursor cursor = db.query(
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
             boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(id, title, description, category , notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, getApplicationContext(), false);
+            Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, getApplicationContext(), false);
             taskList.add(task);
         }
 
@@ -182,8 +185,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (hidenDone) {
             String selection = "category = ? AND isDone = ?";
-            String[] selectionArgs = { selectedCategory, "0" };
-             cursor = db.query(
+            String[] selectionArgs = {selectedCategory, "0"};
+            cursor = db.query(
                     "tasks",
                     projection,
                     selection,
@@ -192,10 +195,9 @@ public class MainActivity extends AppCompatActivity {
                     null,
                     null
             );
-        }
-        else {
+        } else {
             String selection = "category = ?";
-            String[] selectionArgs = { selectedCategory };
+            String[] selectionArgs = {selectedCategory};
             cursor = db.query(
                     "tasks",
                     projection,
@@ -218,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
             int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
             boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(id, title, description, selectedCategory , notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+            Task task = new Task(id, title, description, selectedCategory, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
             taskArrayList.add(task);
         }
 
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (hidenDone) {
             String selection = "isDone = ?";
-            String[] selectionArgs = { "0" };
+            String[] selectionArgs = {"0"};
             cursor = db.query(
                     "tasks",
                     projection,
@@ -257,8 +259,7 @@ public class MainActivity extends AppCompatActivity {
                     null,
                     null
             );
-        }
-        else {
+        } else {
             cursor = db.query(
                     "tasks",
                     projection,
@@ -282,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
             int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
             boolean isTaskDone = (isDone == 1);
 
-            Task task = new Task(id, title, description, category , notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+            Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
             taskArrayList.add(task);
         }
 
