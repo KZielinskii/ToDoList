@@ -115,8 +115,5 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
-//TODO powiadomienia nie przychodzą kiedy się wyłączy i włączy aplikacjię
-//TODO dodać do bazy danych czy włączone są powiadomienia czy nie
 //TODO poprawić wygląd itemu
-//TODO zapisać ustawienia aplikacji w pamięci urządzenia
 //TODO poprawcować nad wyglądem całej aplikacji

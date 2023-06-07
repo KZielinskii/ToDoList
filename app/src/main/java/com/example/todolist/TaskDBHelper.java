@@ -30,7 +30,8 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 "newDateTime TEXT," +
                 "createdDateTime TEXT," +
                 "selectedFileUri TEXT," +
-                "isDone INTEGER DEFAULT 0" +
+                "isDone INTEGER DEFAULT 0," +
+                "isNotification INTEGER DEFAULT 1" +
                 ")";
         db.execSQL(createTableQuery);
     }
@@ -75,9 +76,11 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
                 Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
                 int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
+                int isNotification = cursor.getInt(cursor.getColumnIndexOrThrow("isNotification"));
                 boolean isTaskDone = (isDone == 1);
+                boolean isTaskNotification = (isNotification == 1);
 
-                Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, context, false);
+                Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, isTaskNotification, context, false);
                 taskList.add(task);
 
             } while (cursor.moveToNext());

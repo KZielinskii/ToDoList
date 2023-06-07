@@ -96,7 +96,7 @@ public class AddTaskWindow extends DialogFragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
-                        Task task = new Task(0, newTitle, newDescription, selectedCategory, notificationDateTime, createdDateTime, selectedFileUri, false , context, true);
+                        Task task = new Task(0, newTitle, newDescription, selectedCategory, notificationDateTime, createdDateTime, selectedFileUri, false , true, context, true);
                         taskArrayList.add(task);
                         taskListAdapter.notifyDataSetChanged();
                         scheduleNotification(task);
@@ -180,7 +180,7 @@ public class AddTaskWindow extends DialogFragment {
 
             InputStream inputStream = context.getContentResolver().openInputStream(sourceUri);
             File externalDir = Environment.getExternalStorageDirectory();
-            File appDir = new File(externalDir, "NazwaTwojejAplikacji");
+            File appDir = new File(externalDir, "ToDoList");
             if (!appDir.exists()) {
                 if (!appDir.mkdirs()) {
 

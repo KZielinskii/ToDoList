@@ -15,8 +15,9 @@ public class Task {
     private String createdDateTime;
     private Uri selectedFileUri;
     private boolean isDone;
+    private boolean isNotification;
 
-    public Task(long id, String title, String description, String category, String notificationDateTime, String createdDateTime, Uri selectedFileUri, boolean isDone, Context context, boolean save) {
+    public Task(long id, String title, String description, String category, String notificationDateTime, String createdDateTime, Uri selectedFileUri, boolean isDone , boolean isNotification, Context context, boolean save) {
         this.taskId = id;
         this.title = title;
         this.description = description;
@@ -26,6 +27,7 @@ public class Task {
         this.createdDateTime = createdDateTime;
         this.selectedFileUri = selectedFileUri;
         this.isDone = isDone;
+        this.isNotification = isNotification;
         if(save)saveTask();
 
     }
@@ -133,5 +135,12 @@ public class Task {
 
     public void setDone(boolean done) {
         isDone = done;
+    }
+    public boolean isNotification() {
+        return isNotification;
+    }
+
+    public void setNotification(boolean notification) {
+        isNotification = notification;
     }
 }
