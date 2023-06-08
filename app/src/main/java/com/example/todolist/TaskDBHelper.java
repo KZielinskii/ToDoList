@@ -7,8 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class TaskDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "task.db";
@@ -28,7 +32,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 "title TEXT," +
                 "description TEXT," +
                 "category TEXT," +
-                "newDateTime TEXT," +
+                "notificationDateTime INTEGER," +
                 "createdDateTime TEXT," +
                 "selectedFileUri TEXT," +
                 "isDone INTEGER DEFAULT 0," +
@@ -64,7 +68,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
             query = "SELECT * FROM tasks WHERE category = ?";
             selectionArgs = new String[]{selectedCategory};
         }
-
+        query += " ORDER BY notificationDateTime";
 
         Cursor cursor = db.rawQuery(query, selectionArgs);
         if (cursor.moveToFirst()) {
@@ -73,7 +77,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
                 String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
-                String notificationDateTime = cursor.getString(cursor.getColumnIndexOrThrow("newDateTime"));
+                long notificationDateTimeMillis = cursor.getLong(cursor.getColumnIndexOrThrow("notificationDateTime"));
                 String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
                 String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
                 Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
@@ -83,7 +87,10 @@ public class TaskDBHelper extends SQLiteOpenHelper {
                 boolean isTaskDone = (isDone == 1);
                 boolean isTaskNotification = (isNotification == 1);
 
-                Task task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, isTaskNotification, notificationId, context, false);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+                String notificationDateTime = dateFormat.format(notificationDateTimeMillis);
+
+                Task task = new Task(id, title, description, category, notificationDateTime.toString(), createdDateTime, selectedFileUri, isTaskDone, isTaskNotification, notificationId, context, false);
                 taskList.add(task);
 
             } while (cursor.moveToNext());
@@ -95,7 +102,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public void updateTaskById(Long taskId, String newTitle, String newDescription, String newCategory, String newDateTime, Uri newSelectedFileUri, boolean newIsDone, boolean newIsNotification, int notificationId) {
+    public void updateTaskById(Long taskId, String newTitle, String newDescription, String newCategory, String notificationDateTime, Uri newSelectedFileUri, boolean newIsDone, boolean newIsNotification, int notificationId) {
         int putIntDone = 0;
         int putIntNotification = 0;
         if(newIsDone) putIntDone = 1;
@@ -107,10 +114,20 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         values.put("title", newTitle);
         values.put("description", newDescription);
         values.put("category", newCategory);
-        values.put("newDateTime", newDateTime);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+        java.util.Date date = null;
+        try {
+            date = dateFormat.parse(notificationDateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        values.put("notificationDateTime", date.getTime());
+
         if(newSelectedFileUri!=null) {
             values.put("selectedFileUri", newSelectedFileUri.toString()); // todo uri
         }
+
         values.put("isDone", putIntDone);
         values.put("isNotification", putIntNotification);
         values.put("notificationId", notificationId);

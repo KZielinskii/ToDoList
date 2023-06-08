@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class Task {
     private long taskId;
     private String title;
@@ -42,7 +46,14 @@ public class Task {
         values.put("title", title);
         values.put("description", description);
         values.put("category", category);
-        values.put("newDateTime", notificationDateTime);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+        java.util.Date date = null;
+        try {
+            date = dateFormat.parse(notificationDateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        values.put("notificationDateTime", date.getTime());
         values.put("createdDateTime", createdDateTime);
 
         if (isDone())
