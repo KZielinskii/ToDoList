@@ -17,6 +17,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class ItemActivity extends AppCompatActivity {
     private int position;
@@ -90,6 +96,11 @@ public class ItemActivity extends AppCompatActivity {
                 boolean isChecked = checkBox.isChecked();
                 TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
                 taskDBHelper.updateTaskById(id, title, description, category, notificationDateTime, selectedFileUri, isDone, isChecked, notificationId);
+                if(isChecked) {
+                    scheduleNotification(MainActivity.taskArrayList.get(position));
+                } else {
+                    cancelNotification();
+                }
                 MainActivity.updateData();
             }
         });
@@ -108,6 +119,7 @@ public class ItemActivity extends AppCompatActivity {
            MainActivity.taskArrayList.remove(position);
            taskListAdapter.notifyDataSetChanged();
            MainActivity.taskDBHelper.deleteTaskById(id);
+           //todo przechodzenie do MainActivity
         });
     }
     private void cancelNotification() {
@@ -120,4 +132,35 @@ public class ItemActivity extends AppCompatActivity {
             alarmManager.cancel(pendingIntent);
         }
     }
+
+    private void scheduleNotification(Task task) {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        notificationIntent.putExtra("title", task.getTitle());
+        notificationIntent.putExtra("description", task.getDescription());
+
+        notificationId = (int) System.currentTimeMillis();
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+        Date date = null;
+        try {
+            date = dateFormat.parse(task.getNotificationDateTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        int minutesToSubtract = MainActivity.notificationTime;
+        calendar.add(Calendar.MINUTE, -minutesToSubtract);
+
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+    }
 }
+
+//todo włączanie i wyłączenie powiadomień
