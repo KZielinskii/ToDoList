@@ -47,7 +47,7 @@ import java.util.Locale;
 public class AddTaskWindow extends DialogFragment {
     private static final int PICK_FILE_REQUEST = 1;
     private ArrayList<Task> taskArrayList;
-    private Context context;
+    private final Context context;
     private String notificationDateTime;
     private TextView dateTimeView;
     private Uri selectedFileUri;

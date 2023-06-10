@@ -162,29 +162,70 @@ public class ItemActivity extends AppCompatActivity {
         });
     }
     private void setButtons() {
-        Button deleteTask = findViewById(R.id.buttonDelete);
-        deleteTask.setOnClickListener(view -> {
-           cancelNotification();
-           MainActivity.taskArrayList.remove(position);
-           taskListAdapter.notifyDataSetChanged();
-           MainActivity.taskDBHelper.deleteTaskById(id);
-           this.finish();
+
+        Button editTitle = findViewById(R.id.buttonNewTitle);
+        editTitle.setOnClickListener(view -> {
+            EditText text = findViewById(R.id.editTitle);
+            if(text.isEnabled())
+            {
+                text.setEnabled(false);
+                editTitle.setText(R.string.editTitle);
+
+            }
+            else
+            {
+                text.setEnabled(true);
+                editTitle.setText(R.string.done);
+            }
+
+        });
+
+        Button editDescription = findViewById(R.id.buttonNewDescription);
+        editDescription.setOnClickListener(view -> {
+            EditText text = findViewById(R.id.editDescription);
+            if(text.isEnabled())
+            {
+                text.setEnabled(false);
+                editDescription.setText(R.string.editTitle);
+
+            }
+            else
+            {
+                text.setEnabled(true);
+                editDescription.setText(R.string.done);
+            }
         });
 
         Button buttonSelectDateTime = findViewById(R.id.buttonSelectDateTime);
         buttonSelectDateTime.setOnClickListener(v -> showDateTimePickerDialog());
+
+        Button save = findViewById(R.id.buttonSave);
+        save.setOnClickListener(view -> {
+            //todo usuń starą notifikacje
+            //todo ustaw nową notifikacje
+            //todo zamknij aktywność
+        });
+
+        Button deleteTask = findViewById(R.id.buttonDelete);
+        deleteTask.setOnClickListener(view -> {
+            cancelNotification();
+            MainActivity.taskArrayList.remove(position);
+            taskListAdapter.notifyDataSetChanged();
+            MainActivity.taskDBHelper.deleteTaskById(id);
+            this.finish();
+        });
     }
 
     private void showDateTimePickerDialog() {
         Calendar calendar = Calendar.getInstance();
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(),
+        DatePickerDialog datePickerDialog = new DatePickerDialog(ItemActivity.this,
                 (view, year, monthOfYear, dayOfMonth) -> {
                     calendar.set(Calendar.YEAR, year);
                     calendar.set(Calendar.MONTH, monthOfYear);
                     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                    TimePickerDialog timePickerDialog = new TimePickerDialog(getApplicationContext(),
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(ItemActivity.this,
                             (view1, hourOfDay, minute) -> {
                                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                                 calendar.set(Calendar.MINUTE, minute);
@@ -251,4 +292,3 @@ public class ItemActivity extends AppCompatActivity {
 }
 
 //todo włączanie i wyłączenie powiadomień
-//todo cała obsługa itemu
