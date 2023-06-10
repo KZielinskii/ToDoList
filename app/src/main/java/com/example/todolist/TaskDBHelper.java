@@ -148,5 +148,59 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public Task getTaskById(long taskId) {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] projection = {
+                "id",
+                "title",
+                "description",
+                "category",
+                "notificationDateTime",
+                "createdDateTime",
+                "selectedFileUri",
+                "isDone",
+                "isNotification",
+                "notificationId"
+        };
+        String selection = "id = ?";
+        String[] selectionArgs = {String.valueOf(taskId)};
+        Cursor cursor = db.query(
+                "tasks",
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        Task task = null;
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+            String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+            String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+            long notificationDateTimeMillis = cursor.getLong(cursor.getColumnIndexOrThrow("notificationDateTime"));
+            String createdDateTime = cursor.getString(cursor.getColumnIndexOrThrow("createdDateTime"));
+            String selectedFileUriString = cursor.getString(cursor.getColumnIndexOrThrow("selectedFileUri"));
+            Uri selectedFileUri = (selectedFileUriString != null) ? Uri.parse(selectedFileUriString) : null;
+            int isDone = cursor.getInt(cursor.getColumnIndexOrThrow("isDone"));
+            int isNotification = cursor.getInt(cursor.getColumnIndexOrThrow("isNotification"));
+            int notificationId = cursor.getInt(cursor.getColumnIndexOrThrow("notificationId"));
+            boolean isTaskDone = (isDone == 1);
+            boolean isTaskNotification = (isNotification == 1);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+            String notificationDateTime = dateFormat.format(notificationDateTimeMillis);
+
+            task = new Task(id, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, isTaskDone, isTaskNotification, notificationId, context, false);
+        }
+
+        cursor.close();
+        db.close();
+        return task;
+    }
+
+
 
 }

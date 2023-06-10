@@ -114,5 +114,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-//todo sortowanie po czasie
