@@ -117,22 +117,6 @@ public class ItemActivity extends AppCompatActivity {
         textCreateDate.setText(createdDateTime);
     }
 
-    private void saveEditTask()
-    {
-        /*cancelNotification();
-        String newTitle = editText.getText().toString();
-        String newDescription = editText2.getText().toString();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
-        String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
-
-        Task task = new Task(taskId, newTitle, newDescription, category, notificationDateTime, createdDateTime, selectedFileUri, false , true, notificationId, context, true);
-        MainActivity.taskArrayList.set(position ,task);
-        TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
-        taskDBHelper.updateTaskById(taskId, newTitle, newDescription, category, notificationDateTime, selectedFileUri, isDone, isNotification, notificationId);
-        taskListAdapter.notifyDataSetChanged();
-        scheduleNotification(task);*/
-    }
-
     private void setAttachmentPreview()
     {
         ImageButton fileView = findViewById(R.id.attachmentPreview);
@@ -170,6 +154,7 @@ public class ItemActivity extends AppCompatActivity {
             {
                 text.setEnabled(false);
                 editTitle.setText(R.string.editTitle);
+                title = text.getText().toString();
 
             }
             else
@@ -187,6 +172,7 @@ public class ItemActivity extends AppCompatActivity {
             {
                 text.setEnabled(false);
                 editDescription.setText(R.string.editTitle);
+                description = text.getText().toString();
 
             }
             else
@@ -201,17 +187,26 @@ public class ItemActivity extends AppCompatActivity {
 
         Button save = findViewById(R.id.buttonSave);
         save.setOnClickListener(view -> {
-            //todo usuń starą notifikacje
-            //todo ustaw nową notifikacje
-            //todo zamknij aktywność
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+            String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
+            Task task = new Task(0, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, false , true, notificationId, getApplicationContext(), true);
+
+            cancelNotification();
+            MainActivity.taskArrayList.remove(position);
+            MainActivity.taskDBHelper.deleteTaskById(id);
+            MainActivity.updateData();
+
+
+            scheduleNotification(task);
+            this.finish();
         });
 
         Button deleteTask = findViewById(R.id.buttonDelete);
         deleteTask.setOnClickListener(view -> {
             cancelNotification();
             MainActivity.taskArrayList.remove(position);
-            taskListAdapter.notifyDataSetChanged();
             MainActivity.taskDBHelper.deleteTaskById(id);
+            MainActivity.updateData();
             this.finish();
         });
     }
@@ -290,5 +285,3 @@ public class ItemActivity extends AppCompatActivity {
         }
     }
 }
-
-//todo włączanie i wyłączenie powiadomień
