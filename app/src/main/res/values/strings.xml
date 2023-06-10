@@ -23,6 +23,9 @@
     <string name="choose_category">Wybierz widoczną\nkoategorię:</string>
     <string name="all">Wszystkie</string>
     <string name="Notifications">Powiadomienia</string>
+    <string name="editDate">Edytuj date</string>
+    <string name="editTitle">Edytuj tytuł</string>
+    <string name="editDescription">Edytuj opis</string>
     <string-array name="notification_times">
         <item>1 min</item>
         <item>5 min</item>
