@@ -2,6 +2,8 @@ package com.example.todolist;
 
 import static com.example.todolist.MainActivity.taskListAdapter;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -16,7 +18,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class TaskListAdapter extends ArrayAdapter<Task> {
     private static ArrayList<Task> taskArrayList;
@@ -55,8 +62,13 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
             @Override
             public void onClick(View view) {
                 TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
-                boolean isChecked = checkBox.isChecked();
-                taskDBHelper.updateTaskById(task.getTaskId(), task.getTitle(), task.getDescription(), task.getCategory(), task.getNotificationDateTime(), task.getSelectedFileUri(), isChecked, !isChecked, task.getNotificationId());
+                if(checkBox.isChecked()) {
+                    taskDBHelper.updateTaskById(task.getTaskId(), task.getTitle(), task.getDescription(), task.getCategory(), task.getNotificationDateTime(), task.getSelectedFileUri(), true, false, task.getNotificationId());
+                    cancelNotification(task);
+                } else {
+                    taskDBHelper.updateTaskById(task.getTaskId(), task.getTitle(), task.getDescription(), task.getCategory(), task.getNotificationDateTime(), task.getSelectedFileUri(), false, false, task.getNotificationId());
+                }
+
                 MainActivity.updateData();
             }
         });
@@ -131,4 +143,14 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         taskListAdapter.notifyDataSetChanged();
     }
 
+    private void cancelNotification(Task task) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getNotificationId() , notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
 }

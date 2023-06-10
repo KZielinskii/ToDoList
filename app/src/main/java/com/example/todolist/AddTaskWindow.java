@@ -97,10 +97,11 @@ public class AddTaskWindow extends DialogFragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                         String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
 
+                        notificationId = (int) System.currentTimeMillis();
                         Task task = new Task(0, newTitle, newDescription, selectedCategory, notificationDateTime, createdDateTime, selectedFileUri, false , true, notificationId, context, true);
                         taskArrayList.add(task);
-                        taskListAdapter.notifyDataSetChanged();
                         scheduleNotification(task);
+                        MainActivity.updateData();
                     }
                 })
                 .setNegativeButton("Anuluj", (dialog, id) -> dialog.cancel());
@@ -234,8 +235,6 @@ public class AddTaskWindow extends DialogFragment {
         Intent notificationIntent = new Intent(context, AlarmReceiver.class);
         notificationIntent.putExtra("title", task.getTitle());
         notificationIntent.putExtra("description", task.getDescription());
-
-        notificationId = (int) System.currentTimeMillis();
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 

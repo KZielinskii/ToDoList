@@ -33,9 +33,8 @@ public class Task {
         this.selectedFileUri = selectedFileUri;
         this.isDone = isDone;
         this.isNotification = isNotification;
-        if(save)saveTask();
         this.notificationId = notificationId;
-
+        if(save)saveTask();
     }
 
     public void saveTask() {
@@ -46,6 +45,7 @@ public class Task {
         values.put("title", title);
         values.put("description", description);
         values.put("category", category);
+        values.put("notificationId", notificationId);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
         java.util.Date date = null;
         try {

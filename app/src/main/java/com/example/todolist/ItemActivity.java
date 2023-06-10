@@ -61,8 +61,7 @@ public class ItemActivity extends AppCompatActivity {
         setSpinner();
     }
 
-    private void setSpinner()
-    {
+    private void setSpinner() {
         Spinner categorySpinner = findViewById(R.id.categorySpinner);
         String[] categories = getResources().getStringArray(R.array.category_spinner);
         int categoryIndex = -1;
@@ -89,8 +88,7 @@ public class ItemActivity extends AppCompatActivity {
         });
     }
 
-    private void readIntent()
-    {
+    private void readIntent() {
         position = getIntent().getIntExtra("item_index", -1);
         id = getIntent().getLongExtra("task_id", -1);
         title = getIntent().getStringExtra("task_title");
@@ -104,8 +102,7 @@ public class ItemActivity extends AppCompatActivity {
         notificationId = getIntent().getIntExtra("task_notification_id", -1);
     }
 
-    private void setAllStrings()
-    {
+    private void setAllStrings() {
         TextView textTitle = findViewById(R.id.editTitle);
         TextView textDescription = findViewById(R.id.editDescription);
         TextView textNotificationDate = findViewById(R.id.editDate);
@@ -117,48 +114,31 @@ public class ItemActivity extends AppCompatActivity {
         textCreateDate.setText(createdDateTime);
     }
 
-    private void setAttachmentPreview()
-    {
+    private void setAttachmentPreview() {
         ImageButton fileView = findViewById(R.id.attachmentPreview);
-        if(selectedFileUri == null)
-        {
+        if (selectedFileUri == null) {
             fileView.setImageResource(R.drawable.baseline_file_download_off_64);
         } else {
             fileView.setImageResource(R.drawable.baseline_file_download_64);
         }
     }
+
     private void setChechBox() {
         CheckBox checkBox = findViewById(R.id.checkbox);
         checkBox.setChecked(isOn);
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isChecked = checkBox.isChecked();
-                TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
-                taskDBHelper.updateTaskById(id, title, description, category, notificationDateTime, selectedFileUri, isDone, isChecked, notificationId);
-                if(isChecked) {
-                    scheduleNotification(MainActivity.taskArrayList.get(position));
-                } else {
-                    cancelNotification();
-                }
-                MainActivity.updateData();
-            }
-        });
     }
+
     private void setButtons() {
 
         Button editTitle = findViewById(R.id.buttonNewTitle);
         editTitle.setOnClickListener(view -> {
             EditText text = findViewById(R.id.editTitle);
-            if(text.isEnabled())
-            {
+            if (text.isEnabled()) {
                 text.setEnabled(false);
                 editTitle.setText(R.string.editTitle);
                 title = text.getText().toString();
 
-            }
-            else
-            {
+            } else {
                 text.setEnabled(true);
                 editTitle.setText(R.string.done);
             }
@@ -168,15 +148,12 @@ public class ItemActivity extends AppCompatActivity {
         Button editDescription = findViewById(R.id.buttonNewDescription);
         editDescription.setOnClickListener(view -> {
             EditText text = findViewById(R.id.editDescription);
-            if(text.isEnabled())
-            {
+            if (text.isEnabled()) {
                 text.setEnabled(false);
                 editDescription.setText(R.string.editTitle);
                 description = text.getText().toString();
 
-            }
-            else
-            {
+            } else {
                 text.setEnabled(true);
                 editDescription.setText(R.string.done);
             }
@@ -187,17 +164,16 @@ public class ItemActivity extends AppCompatActivity {
 
         Button save = findViewById(R.id.buttonSave);
         save.setOnClickListener(view -> {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
-            String createdDateTime = dateFormat.format(Calendar.getInstance().getTime());
-            Task task = new Task(0, title, description, category, notificationDateTime, createdDateTime, selectedFileUri, false , true, notificationId, getApplicationContext(), true);
+            CheckBox checkBox = findViewById(R.id.checkbox);
+            isOn = checkBox.isChecked();
 
+            TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
+            taskDBHelper.updateTaskById(id, title, description, category, notificationDateTime, selectedFileUri, isDone, isOn, notificationId);
             cancelNotification();
-            MainActivity.taskArrayList.remove(position);
-            MainActivity.taskDBHelper.deleteTaskById(id);
+
             MainActivity.updateData();
+            if(isOn) scheduleNotification(taskDBHelper.getTaskById(id));
 
-
-            scheduleNotification(task);
             this.finish();
         });
 
@@ -245,6 +221,7 @@ public class ItemActivity extends AppCompatActivity {
 
         datePickerDialog.show();
     }
+
     private void cancelNotification() {
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
