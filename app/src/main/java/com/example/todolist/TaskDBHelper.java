@@ -125,7 +125,7 @@ public class TaskDBHelper extends SQLiteOpenHelper {
         values.put("notificationDateTime", date.getTime());
 
         if(newSelectedFileUri!=null) {
-            values.put("selectedFileUri", newSelectedFileUri.toString()); // todo uri
+            values.put("selectedFileUri", newSelectedFileUri.toString());
         }
 
         values.put("isDone", putIntDone);
