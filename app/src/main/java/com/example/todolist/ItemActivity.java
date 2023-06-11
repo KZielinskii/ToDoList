@@ -269,9 +269,8 @@ public class ItemActivity extends AppCompatActivity {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
-
     private void openCopiedFile() {
-        Uri fileUri = Uri.parse(String.valueOf(selectedFileUri));
+        Uri fileUri = selectedFileUri;
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(fileUri, null);
@@ -286,6 +285,4 @@ public class ItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-
 }
