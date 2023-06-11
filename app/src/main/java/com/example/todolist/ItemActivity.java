@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -185,6 +186,18 @@ public class ItemActivity extends AppCompatActivity {
         Button deleteTask = findViewById(R.id.buttonDelete);
         deleteTask.setOnClickListener(view -> {
             cancelNotification();
+            if(selectedFileUri!=null)
+            {
+                boolean isDeleted = deleteFileFromUri(selectedFileUri);
+                if (isDeleted) {
+                    Toast.makeText(this, "Pomyślnie usunięto zadanie: "+MainActivity.taskArrayList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Plik nie został usunięty!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Pomyślnie usunięto zadanie: "+MainActivity.taskArrayList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+            }
+
             MainActivity.taskArrayList.remove(position);
             MainActivity.taskDBHelper.deleteTaskById(id);
             MainActivity.updateData();
@@ -285,4 +298,17 @@ public class ItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    private boolean deleteFileFromUri(Uri fileUri) {
+        try {
+            ContentResolver contentResolver = getContentResolver();
+            int rowsDeleted = contentResolver.delete(fileUri, null, null);
+
+            return rowsDeleted > 0;
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
