@@ -133,3 +133,4 @@ public class SettingsActivity extends AppCompatActivity {
     }
 }
 
+//todo powiadomienie z wyprzedzeniem
