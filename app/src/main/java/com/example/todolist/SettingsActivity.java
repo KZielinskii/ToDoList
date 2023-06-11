@@ -3,7 +3,10 @@ package com.example.todolist;
 import static com.example.todolist.MainActivity.taskListAdapter;
 import static com.example.todolist.MainActivity.updateData;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +19,12 @@ import android.widget.Spinner;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatToggleButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
     private EditText notificationTime;
@@ -57,10 +65,22 @@ public class SettingsActivity extends AppCompatActivity {
                 String newTime = remove0FromTheFront();
                 notificationTime.setText(newTime);
                 MainActivity.notificationTime = Integer.parseInt(newTime);
+
+                reloadAllNotifications();
                 saveNotificationTime();
             }
         });
     }
+
+    private void reloadAllNotifications() {
+        for (Task task : MainActivity.taskArrayList) {
+            if (task.isNotification()) {
+                cancelNotification(task);
+                scheduleNotification(task);
+            }
+        }
+    }
+
     private String remove0FromTheFront()
     {
         String stringTime = String.valueOf(notificationTime.getText());
@@ -131,6 +151,42 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString("savedSelectedCategory", MainActivity.selectedCategory);
         editor.apply();
     }
-}
 
-//todo powiadomienie z wyprzedzeniem
+    private void cancelNotification(Task task) {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), task.getNotificationId(), notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
+    private void scheduleNotification(Task task) {
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent notificationIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        notificationIntent.putExtra("title", task.getTitle());
+        notificationIntent.putExtra("description", task.getDescription());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), task.getNotificationId(), notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
+        Date date = null;
+        try {
+            date = dateFormat.parse(task.getNotificationDateTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        int minutesToSubtract = MainActivity.notificationTime;
+        calendar.add(Calendar.MINUTE, -minutesToSubtract);
+
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        }
+    }
+}
