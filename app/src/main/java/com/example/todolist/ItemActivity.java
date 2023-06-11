@@ -9,8 +9,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -25,7 +28,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,7 +41,7 @@ import java.util.Locale;
 
 
 public class ItemActivity extends AppCompatActivity {
-    private static final int PICK_FILE_REQUEST = 1;
+    private static final int OPEN_FILE_REQUEST_CODE = 1;
     private int position;
     private Long id;
     private String title;
@@ -180,11 +186,26 @@ public class ItemActivity extends AppCompatActivity {
         Button deleteTask = findViewById(R.id.buttonDelete);
         deleteTask.setOnClickListener(view -> {
             cancelNotification();
+            if(selectedFileUri!=null)
+            {
+                boolean isDeleted = deleteFileFromUri(selectedFileUri);
+                if (isDeleted) {
+                    Toast.makeText(this, "Pomyślnie usunięto zadanie: "+MainActivity.taskArrayList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Plik nie został usunięty!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Pomyślnie usunięto zadanie: "+MainActivity.taskArrayList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+            }
+
             MainActivity.taskArrayList.remove(position);
             MainActivity.taskDBHelper.deleteTaskById(id);
             MainActivity.updateData();
             this.finish();
         });
+
+        ImageButton attachment = findViewById(R.id.attachmentPreview);
+        attachment.setOnClickListener(view -> openCopiedFile());
     }
 
     private void showDateTimePickerDialog() {
@@ -261,4 +282,33 @@ public class ItemActivity extends AppCompatActivity {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
+    private void openCopiedFile() {
+        Uri fileUri = selectedFileUri;
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(fileUri, null);
+
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(getApplicationContext(), "No application found to open the file", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    private boolean deleteFileFromUri(Uri fileUri) {
+        try {
+            ContentResolver contentResolver = getContentResolver();
+            int rowsDeleted = contentResolver.delete(fileUri, null, null);
+
+            return rowsDeleted > 0;
+        } catch (SecurityException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

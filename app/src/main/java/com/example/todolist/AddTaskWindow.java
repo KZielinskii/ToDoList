@@ -29,6 +29,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 
 
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 
 
@@ -181,11 +182,10 @@ public class AddTaskWindow extends DialogFragment {
             String sourceFileName = getFileNameFromUri(sourceUri);
 
             InputStream inputStream = context.getContentResolver().openInputStream(sourceUri);
-            File externalDir = Environment.getExternalStorageDirectory();
+            File externalDir = context.getExternalFilesDir(null);
             File appDir = new File(externalDir, "ToDoList");
             if (!appDir.exists()) {
                 if (!appDir.mkdirs()) {
-
                     return;
                 }
             }
@@ -202,13 +202,14 @@ public class AddTaskWindow extends DialogFragment {
             outputStream.close();
             inputStream.close();
 
-            selectedFileUri = Uri.fromFile(destinationFile);
+            selectedFileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", destinationFile);
 
             attachmentView.setText(sourceFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private String getFileNameFromUri(Uri uri) {
         String fileName = "";
