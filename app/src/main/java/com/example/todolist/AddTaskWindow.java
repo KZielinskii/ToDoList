@@ -47,6 +47,7 @@ import java.util.Locale;
 
 public class AddTaskWindow extends DialogFragment {
     private static final int PICK_FILE_REQUEST = 1;
+    private Button positiveButton;
     private ArrayList<Task> taskArrayList;
     private final Context context;
     private String notificationDateTime;
@@ -109,9 +110,11 @@ public class AddTaskWindow extends DialogFragment {
 
 
         AlertDialog dialog = builder.create();
+
         dialog.show();
 
-        Button positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+        positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE);
+        positiveButton.setEnabled(false);
         Button negativeButton = dialog.getButton(Dialog.BUTTON_NEGATIVE);
 
         int buttonSize = getResources().getDimensionPixelSize(R.dimen.min_size);
@@ -166,6 +169,7 @@ public class AddTaskWindow extends DialogFragment {
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
                                     notificationDateTime = dateFormat.format(selectedDate);
                                     dateTimeView.setText(notificationDateTime);
+                                    positiveButton.setEnabled(true);
                                 }
                             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
