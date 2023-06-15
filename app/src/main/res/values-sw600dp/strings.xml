@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Lista ToDo</string>
+    <string name="ToDo">Lista zadań:</string>
+    <string name="add">Dodaj zadanie:</string>
+    <string name="choose_time">Wybierz godzinę</string>
+    <string name="choose_date">Wybierz datę</string>
+    <string name="choose_file">Wybierz plik:</string>
+    <string name="add_title">Tytuł:</string>
+    <string name="add_description">Opis:</string>
+    <string name="date">Data:</string>
+    <string name="attachment">Załącznik:</string>
+    <string name="done">Ukończono</string>
+    <string name="category">Kategoria:</string>
+    <string name="delete">Usuń</string>
+    <string name="creating_date">Data utworzenia:</string>
+    <string name="Settings">Ustawienia:</string>
+    <string name="time_notification">Czas powiadomienia\nprzed zadaniem:</string>
+    <string name="on_off_hidden">Ukryj zakończone\nzadania:</string>
+    <string name="min">min</string>
+    <string name="edit">Edytuj</string>
+    <string name="save">Zapisz</string>
+    <string name="Search">Wyszukaj...</string>
+    <string name="choose_category">Wybierz widoczną\nkoategorię:</string>
+    <string name="all">Wszystkie</string>
+    <string name="Notifications">Powiadomienia</string>
+    <string name="editDate">Edytuj date</string>
+    <string name="editTitle">Edytuj tytuł</string>
+    <string name="editDescription">Edytuj opis</string>
+    <string-array name="notification_times">
+        <item>1 min</item>
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>30 min</item>
+    </string-array>
+    <string-array name="category_spinner">
+        <item>Praca</item>
+        <item>Dom</item>
+        <item>Nauka</item>
+        <item>Zdrowie i fitness</item>
+        <item>Finanse</item>
+        <item>Ważne terminy</item>
+        <item>Społeczność</item>
+        <item>Inne</item>
+    </string-array>
+    <string-array name="category_spinner_settings">
+        <item>@string/all</item>
+        <item>Praca</item>
+        <item>Dom</item>
+        <item>Nauka</item>
+        <item>Zdrowie i fitness</item>
+        <item>Finanse</item>
+        <item>Ważne terminy</item>
+        <item>Społeczność</item>
+        <item>Inne</item>
+    </string-array>
+
+</resources>
