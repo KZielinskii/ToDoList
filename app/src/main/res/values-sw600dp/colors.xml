@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="category_praca">#FFD7E6</color> <!-- Różowy -->
+    <color name="category_dom">#B4F8C8</color> <!-- Zielony -->
+    <color name="category_nauka">#B4C8FF</color> <!-- Niebieski -->
+    <color name="category_zdrowie">#FFEEB3</color> <!-- Żółty -->
+    <color name="category_finanse">#D8B4FF</color> <!-- Fioletowy -->
+    <color name="category_terminy">#B4FFF2</color> <!-- Turkusowy -->
+    <color name="category_spolecznosc">#FFC9B4</color> <!-- Pomarańczowy -->
+    <color name="category_inne">#FFFFFF</color>
+    <color name="red">#FF5555</color>
+
+</resources>
