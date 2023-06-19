@@ -1,6 +1,8 @@
 package com.example.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -39,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         taskListAdapter = new TaskListAdapter(this, taskArrayList);
-        ListView listView = findViewById(R.id.localities_list);
-        listView.setAdapter(taskListAdapter);
+        RecyclerView recyclerView = findViewById(R.id.localities_list);
+        recyclerView.setAdapter(taskListAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         ImageButton settings = findViewById(R.id.settings);
         settings.setOnClickListener(view -> {
