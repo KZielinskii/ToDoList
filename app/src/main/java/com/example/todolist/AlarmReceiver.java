@@ -21,10 +21,11 @@ public class AlarmReceiver extends BroadcastReceiver
     {
         String title = intent.getStringExtra("title");
         String description = intent.getStringExtra("description");
+        Long taskId = intent.getLongExtra("taskId", -1);
 
-        // Tworzenie intencji dla aktywności lub usługi, którą chcesz otworzyć po kliknięciu w powiadomienie
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        Intent notificationIntent = new Intent(context, ItemActivity.class);
+        notificationIntent.putExtra("task_id", taskId);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, taskId.intValue(), notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         String channelId = "channel_id";
         CharSequence channelName = "Nazwa kanału";

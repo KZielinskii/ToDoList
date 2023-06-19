@@ -147,7 +147,7 @@ public class TaskListAdapter extends ArrayAdapter<Task> {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent notificationIntent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getNotificationId() , notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, task.getNotificationId() , notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);

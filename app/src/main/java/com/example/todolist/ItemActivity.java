@@ -103,9 +103,29 @@ public class ItemActivity extends AppCompatActivity {
         notificationDateTime = getIntent().getStringExtra("task_notification_date");
         createdDateTime = getIntent().getStringExtra("task_create_date");
         selectedFileUri = getIntent().getParcelableExtra("task_file");
-        isDone = getIntent().getBooleanExtra("task_isDone", true);
+        isDone = getIntent().getBooleanExtra("task_isDone", false);
         isOn = getIntent().getBooleanExtra("task_isOn", true);
         notificationId = getIntent().getIntExtra("task_notification_id", -1);
+
+        if(id != -1) {
+            Task task = getTaskById(id);
+            if (task != null) {
+                title = task.getTitle();
+                description = task.getDescription();
+                category = task.getCategory();
+                notificationDateTime = task.getNotificationDateTime();
+                createdDateTime = task.getCreatedDateTime();
+                selectedFileUri = task.getSelectedFileUri();
+                isDone = task.isDone();
+                isOn = task.isNotification();
+                notificationId = task.getNotificationId();
+            }
+        }
+    }
+
+    private Task getTaskById(long id) {
+        TaskDBHelper dbHelper = new TaskDBHelper(getApplicationContext());
+        return dbHelper.getTaskById(id);
     }
 
     private void setAllStrings() {
@@ -173,7 +193,7 @@ public class ItemActivity extends AppCompatActivity {
             CheckBox checkBox = findViewById(R.id.checkbox);
             isOn = checkBox.isChecked();
 
-            TaskDBHelper taskDBHelper = MainActivity.taskDBHelper;
+            TaskDBHelper taskDBHelper = new TaskDBHelper(getApplicationContext());
             taskDBHelper.updateTaskById(id, title, description, category, notificationDateTime, selectedFileUri, isDone, isOn, notificationId);
             cancelNotification();
 
@@ -247,7 +267,7 @@ public class ItemActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
         Intent notificationIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
@@ -263,7 +283,7 @@ public class ItemActivity extends AppCompatActivity {
 
         notificationId = (int) System.currentTimeMillis();
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), notificationId, notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
         Date date = null;

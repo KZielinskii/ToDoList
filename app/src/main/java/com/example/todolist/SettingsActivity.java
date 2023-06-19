@@ -156,7 +156,7 @@ public class SettingsActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
         Intent notificationIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), task.getNotificationId(), notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), task.getNotificationId(), notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
@@ -170,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
         notificationIntent.putExtra("title", task.getTitle());
         notificationIntent.putExtra("description", task.getDescription());
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), task.getNotificationId(), notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), task.getNotificationId(), notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
         Date date = null;

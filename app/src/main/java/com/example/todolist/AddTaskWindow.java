@@ -240,8 +240,9 @@ public class AddTaskWindow extends DialogFragment {
         Intent notificationIntent = new Intent(context, AlarmReceiver.class);
         notificationIntent.putExtra("title", task.getTitle());
         notificationIntent.putExtra("description", task.getDescription());
+        notificationIntent.putExtra("taskId", task.getTaskId());
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationId, notificationIntent, PendingIntent.FLAG_MUTABLE);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy\nHH:mm", Locale.getDefault());
         Date date = null;
